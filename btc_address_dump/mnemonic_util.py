@@ -1,4 +1,3 @@
-
 # Adapted from:
 # https://github.com/vergl4s/ethereum-mnemonic-utils/blob/master/mnemonic_utils.py
 
@@ -6,9 +5,6 @@ import hashlib
 import hmac
 import struct
 
-import ecdsa
-
-from base58 import b58encode_check
 from ecdsa.curves import SECP256k1
 
 BIP39_PBKDF2_ROUNDS = 2048
@@ -24,7 +20,7 @@ LEDGER_ETH_DERIVATION_PATH = "m/44'/0'/0'/0/0"
 # Registered coin types for BIP-0044, see https://github.com/satoshilabs/slips/blob/master/slip-0044.md
 
 
-def mnemonic_to_bip39seed(mnemonic, passphrase):
+def mnemonic_to_bip39seed(mnemonic: str, passphrase: str) -> bytes:
     """ BIP39 seed from a mnemonic key.
         Logic adapted from https://github.com/trezor/python-mnemonic. """
     mnemonic = bytes(mnemonic, 'utf8')
@@ -32,16 +28,15 @@ def mnemonic_to_bip39seed(mnemonic, passphrase):
     return hashlib.pbkdf2_hmac('sha512', mnemonic, salt, BIP39_PBKDF2_ROUNDS)
 
 
-def bip39seed_to_bip32masternode(seed):
+def bip39seed_to_bip32masternode(seed: bytes) -> tuple[bytes, bytes]:
     """ BIP32 master node derivation from a bip39 seed.
         Logic adapted from https://github.com/satoshilabs/slips/blob/master/slip-0010/testvectors.py. """
-    k = seed
     h = hmac.new(BIP32_SEED_MODIFIER, seed, hashlib.sha512).digest()
     key, chain_code = h[:32], h[32:]
     return key, chain_code
 
 
-def derive_public_key(private_key):
+def derive_public_key(private_key: bytes) -> bytes:
     """ Public key from a private key.
         Logic adapted from https://github.com/satoshilabs/slips/blob/master/slip-0010/testvectors.py. """
 
@@ -51,7 +46,7 @@ def derive_public_key(private_key):
     return (2 + parity).to_bytes(1, byteorder='big') + xstr
 
 
-def derive_bip32childkey(parent_key, parent_chain_code, i):
+def derive_bip32childkey(parent_key: bytes, parent_chain_code: bytes, i) -> tuple[bytes, bytes]:
     """ Derives a child key from an existing key, i is current derivation parameter.
         Logic adapted from https://github.com/satoshilabs/slips/blob/master/slip-0010/testvectors.py. """
 
@@ -77,7 +72,7 @@ def derive_bip32childkey(parent_key, parent_chain_code, i):
     return key, chain_code
 
 
-def parse_derivation_path(str_derivation_path):
+def parse_derivation_path(str_derivation_path: str) -> list[int]:
     """ Parses a derivation path such as "m/44'/60/0'/0" and returns
         list of integers for each element in path. """
 
@@ -93,7 +88,7 @@ def parse_derivation_path(str_derivation_path):
     return path
 
 
-def mnemonic_to_private_key(mnemonic, str_derivation_path=LEDGER_ETH_DERIVATION_PATH, passphrase=""):
+def mnemonic_to_private_key(mnemonic: str, str_derivation_path: str = LEDGER_ETH_DERIVATION_PATH, passphrase: str = "") -> bytes:
     """ Performs all convertions to get a private key from a mnemonic sentence, including:
 
             BIP39 mnemonic to seed

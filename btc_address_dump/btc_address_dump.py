@@ -4,7 +4,6 @@ import sys
 import re
 import binascii
 import ecdsa
-from ecdsa.curves import SECP256k1
 
 file_path = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 sys.path.insert(0, os.path.abspath(file_path))
@@ -15,7 +14,7 @@ import p2pkh_util
 import p2wpkh_util
 
 
-def prikey_to_pubkey(private_key, compressed_pubkey=False):
+def prikey_to_pubkey(private_key: bytes, compressed_pubkey: bool = False) -> bytes:
     Q = int.from_bytes(private_key, byteorder='big') * ecdsa.curves.SECP256k1.generator
     xstr = Q.x().to_bytes(32, byteorder='big')
     ystr = Q.y().to_bytes(32, byteorder='big')
