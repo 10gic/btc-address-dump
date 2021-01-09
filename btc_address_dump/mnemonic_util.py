@@ -1,11 +1,18 @@
 # Adapted from:
 # https://github.com/vergl4s/ethereum-mnemonic-utils/blob/master/mnemonic_utils.py
-
 import hashlib
 import hmac
 import struct
+import os
+import sys
 
 from ecdsa.curves import SECP256k1
+from ecdsa.ellipticcurve import Point, PointJacobi
+
+file_path = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+sys.path.insert(0, os.path.abspath(file_path))
+
+import common_util
 
 BIP39_PBKDF2_ROUNDS = 2048
 BIP39_SALT_MODIFIER = "mnemonic"
@@ -20,7 +27,7 @@ LEDGER_ETH_DERIVATION_PATH = "m/44'/0'/0'/0/0"
 # Registered coin types for BIP-0044, see https://github.com/satoshilabs/slips/blob/master/slip-0044.md
 
 
-def mnemonic_to_bip39seed(mnemonic: str, passphrase: str) -> bytes:
+def mnemonic_to_bip39seed(mnemonic: str, passphrase: str = "") -> bytes:
     """ BIP39 seed from a mnemonic key.
         Logic adapted from https://github.com/trezor/python-mnemonic. """
     mnemonic = bytes(mnemonic, 'utf8')
@@ -36,46 +43,58 @@ def bip39seed_to_bip32masternode(seed: bytes) -> tuple[bytes, bytes]:
     return key, chain_code
 
 
-def derive_public_key(private_key: bytes) -> bytes:
-    """ Public key from a private key.
-        Logic adapted from https://github.com/satoshilabs/slips/blob/master/slip-0010/testvectors.py. """
-
-    Q = int.from_bytes(private_key, byteorder='big') * BIP32_CURVE.generator
-    xstr = Q.x().to_bytes(32, byteorder='big')
-    parity = Q.y() & 1
-    return (2 + parity).to_bytes(1, byteorder='big') + xstr
-
-
-def derive_bip32childkey(parent_key: bytes, parent_chain_code: bytes, i) -> tuple[bytes, bytes]:
-    """ Derives a child key from an existing key, i is current derivation parameter.
-        Logic adapted from https://github.com/satoshilabs/slips/blob/master/slip-0010/testvectors.py. """
-
-    assert len(parent_key) == 32
+def derive_bip32childkey(parent_key: bytes, parent_chain_code: bytes, index: int) -> tuple[bytes, bytes]:
+    """ Derives a child key from an existing key, index is current derivation parameter.
+        Support:
+        1. parent private key -> child private key, in this case, parent_key must be 32 bytes
+        2. parent public key -> child public key, in this case, parent_key must be 33 bytes, index must < 0x80000000
+    """
+    assert len(parent_key) == 32 or len(parent_key) == 33
     assert len(parent_chain_code) == 32
-    k = parent_chain_code
-    if (i & BIP32_PRIVDEV) != 0:
-        key = b'\x00' + parent_key
-    else:
-        key = derive_public_key(parent_key)
-    d = key + struct.pack('>L', i)
-    while True:
-        h = hmac.new(k, d, hashlib.sha512).digest()
-        key, chain_code = h[:32], h[32:]
-        a = int.from_bytes(key, byteorder='big')
-        b = int.from_bytes(parent_key, byteorder='big')
-        key = (a + b) % BIP32_CURVE.order
-        if a < BIP32_CURVE.order and key != 0:
-            key = key.to_bytes(32, byteorder='big')
-            break
-        d = b'\x01' + h[32:] + struct.pack('>L', i)
 
+    parent_is_public_key = len(parent_key) == 33
+    if parent_is_public_key:
+        if (index & BIP32_PRIVDEV) != 0:  # index >= 0x80000000, hardened child
+            raise Exception("hardened derivation is only defined for private key derivation, "
+                            "not defined for public key derivation")
+        else:  # normal public child
+            msg = parent_key
+    else:
+        if (index & BIP32_PRIVDEV) != 0:  # index >= 0x80000000, hardened child
+            msg = b'\x00' + parent_key
+        else:  # normal private child
+            msg = common_util.prikey_to_pubkey(parent_key)  # get compressed public key from a private key
+    msg = msg + struct.pack('>L', index)  # `>` means big-endian, `L` means unsigned long
+    # compute sha512
+    h = hmac.new(parent_chain_code, msg, hashlib.sha512).digest()
+    left32, chain_code = h[:32], h[32:]
+    a = int.from_bytes(left32, byteorder='big')
+    b = int.from_bytes(parent_key, byteorder='big')
+    if parent_is_public_key:
+        # build Point from compressed public key
+        x, y = common_util.pubkey_from_bytes_to_point(parent_key)
+        parent_public_key: Point = Point(BIP32_CURVE.curve, x, y)
+        # child_public_key = left32 * G + parent_public_key
+        child_public_key: PointJacobi = a * BIP32_CURVE.generator + PointJacobi.from_affine(parent_public_key)
+        if a >= BIP32_CURVE.order:
+            raise Exception("left32 greater than or equal to the order, please use another index")
+        if child_public_key == 0:
+            raise Exception("resulting public key is the point at infinity, please use another index")
+        key = common_util.pubkey_from_point_to_bytes(child_public_key.x(), child_public_key.y())  # 33 bytes
+    else:
+        child_private_key = (a + b) % BIP32_CURVE.order
+        # check validation of resulting key
+        if a >= BIP32_CURVE.order:
+            raise Exception("left32 greater than or equal to the order, please use another index")
+        if child_private_key == 0:
+            raise Exception("resulting private key is zero, please use another index")
+        key = child_private_key.to_bytes(32, byteorder='big')  # 32 bytes
     return key, chain_code
 
 
 def parse_derivation_path(str_derivation_path: str) -> list[int]:
     """ Parses a derivation path such as "m/44'/60/0'/0" and returns
         list of integers for each element in path. """
-
     path = []
     if str_derivation_path[0:2] != 'm/':
         raise ValueError("Can't recognize derivation path. It should look like \"m/44'/60/0'/0\".")
@@ -88,7 +107,8 @@ def parse_derivation_path(str_derivation_path: str) -> list[int]:
     return path
 
 
-def mnemonic_to_private_key(mnemonic: str, str_derivation_path: str = LEDGER_ETH_DERIVATION_PATH, passphrase: str = "") -> bytes:
+def mnemonic_to_private_key(mnemonic: str, str_derivation_path: str = LEDGER_ETH_DERIVATION_PATH,
+                            passphrase: str = "") -> bytes:
     """ Performs all convertions to get a private key from a mnemonic sentence, including:
 
             BIP39 mnemonic to seed
@@ -101,16 +121,10 @@ def mnemonic_to_private_key(mnemonic: str, str_derivation_path: str = LEDGER_ETH
                 used by ledger ETH wallet
 
     """
-
     derivation_path = parse_derivation_path(str_derivation_path)
-
     bip39seed = mnemonic_to_bip39seed(mnemonic, passphrase)
-
     master_private_key, master_chain_code = bip39seed_to_bip32masternode(bip39seed)
-
     private_key, chain_code = master_private_key, master_chain_code
-
     for i in derivation_path:
         private_key, chain_code = derive_bip32childkey(private_key, chain_code, i)
-
     return private_key

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
 from setuptools import setup
 
 requirements = [
@@ -11,7 +10,7 @@ requirements = [
 
 setup(
     name='btc-address-dump',
-    version='0.1.1',
+    version='0.1.2',
     author='cig01',
     url='https://github.com/10gic/btc-address-dump',
     license='MIT License',
@@ -29,6 +28,7 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Text Processing',
         'Topic :: Utilities',

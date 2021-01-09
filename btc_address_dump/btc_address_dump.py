@@ -3,7 +3,6 @@ import os
 import sys
 import re
 import binascii
-import ecdsa
 
 file_path = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 sys.path.insert(0, os.path.abspath(file_path))
@@ -12,40 +11,7 @@ import mnemonic_util
 import wif_util
 import p2pkh_util
 import p2wpkh_util
-
-
-def prikey_to_pubkey(private_key: bytes, compressed_pubkey: bool = False) -> bytes:
-    Q = int.from_bytes(private_key, byteorder='big') * ecdsa.curves.SECP256k1.generator
-    xstr = Q.x().to_bytes(32, byteorder='big')
-    ystr = Q.y().to_bytes(32, byteorder='big')
-    if compressed_pubkey:
-        parity = Q.y() & 1
-        return (2 + parity).to_bytes(1, byteorder='big') + xstr
-    else:
-        return b'\04' + xstr + ystr
-
-
-def pubkey_compressed_to_uncompressed(compressed_pubkey: bytes) -> bytes:
-    # modulo p which is defined by secp256k1's spec
-    p = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F
-    x = int.from_bytes(compressed_pubkey[1:33], byteorder='big')
-    y_sq = (pow(x, 3, p) + 7) % p
-    y = pow(y_sq, (p + 1) // 4, p)
-    if compressed_pubkey[0] % 2 != y % 2:
-        y = p - y
-    y = y.to_bytes(32, byteorder='big')
-    return compressed_pubkey[1:33] + y  # x + y
-
-
-def pubkey_uncompressed_to_compressed(uncompressed_pubkey: bytes) -> bytes:
-    # Compressed public key is:
-    # 0x02 + x - coordinate if y is even
-    # 0x03 + x - coordinate if y is odd
-    x = int.from_bytes(uncompressed_pubkey[1:33], byteorder='big') # uncompressed_pubkey must start with b'\04'
-    y = int.from_bytes(uncompressed_pubkey[32:65], byteorder='big')
-    parity = y & 1
-    compressed_public_key = (2 + parity).to_bytes(1, byteorder='big') + x.to_bytes(32, byteorder='big')
-    return compressed_public_key
+import common_util
 
 
 def main_entry(argv):
@@ -71,8 +37,8 @@ def main_entry(argv):
             private_key = mnemonic_util.mnemonic_to_private_key(mnemonic)
             private_key_wif = wif_util.gen_wif_key(private_key)
             private_key_wif_compressed = wif_util.gen_wif_key(private_key, compressed_WIF=True)
-            public_key_uncompressed = prikey_to_pubkey(private_key, compressed_pubkey=False)
-            public_key_compressed = pubkey_uncompressed_to_compressed(public_key_uncompressed)
+            public_key_uncompressed = common_util.prikey_to_pubkey(private_key, compressed_pubkey=False)
+            public_key_compressed = common_util.pubkey_uncompressed_to_compressed(public_key_uncompressed)
             addr_p2pkh_uncompressed = p2pkh_util.pubkey_to_addr(public_key_uncompressed)
             addr_p2pkh_compressed = p2pkh_util.pubkey_to_addr(public_key_compressed)
             addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_addr(public_key_compressed)
@@ -85,8 +51,8 @@ def main_entry(argv):
             private_key = binascii.unhexlify(private_key_hex)
             private_key_wif = wif_util.gen_wif_key(private_key)
             private_key_wif_compressed = wif_util.gen_wif_key(private_key, compressed_WIF=True)
-            public_key_uncompressed = prikey_to_pubkey(private_key, compressed_pubkey=False)
-            public_key_compressed = pubkey_uncompressed_to_compressed(public_key_uncompressed)
+            public_key_uncompressed = common_util.prikey_to_pubkey(private_key, compressed_pubkey=False)
+            public_key_compressed = common_util.pubkey_uncompressed_to_compressed(public_key_uncompressed)
             addr_p2pkh_uncompressed = p2pkh_util.pubkey_to_addr(public_key_uncompressed)
             addr_p2pkh_compressed = p2pkh_util.pubkey_to_addr(public_key_compressed)
             addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_addr(public_key_compressed)
@@ -101,7 +67,7 @@ def main_entry(argv):
             # For example: 044cd0aaeca3b636078583408e75edd77307b5190ca7a48bb9fbc1f2576c17dff1087190d91e26af594e3f8ecd3f4d3596c03c45d3b235da916903c930c6593cc4
             public_key_hex = address_input[-128:]  # keep last 128 (remove leading 0x04, 0x, 04)
             public_key_uncompressed = b'\04' + binascii.unhexlify(public_key_hex)
-            public_key_compressed = pubkey_uncompressed_to_compressed(public_key_uncompressed)
+            public_key_compressed = common_util.pubkey_uncompressed_to_compressed(public_key_uncompressed)
             addr_p2pkh_uncompressed = p2pkh_util.pubkey_to_addr(public_key_uncompressed)
             addr_p2pkh_compressed = p2pkh_util.pubkey_to_addr(public_key_compressed)
             addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_addr(public_key_compressed)
@@ -112,7 +78,7 @@ def main_entry(argv):
             # For example: 024cd0aaeca3b636078583408e75edd77307b5190ca7a48bb9fbc1f2576c17dff1
             public_key_compressed_hexstr = address_input.lower().replace('0x', '')
             public_key_compressed = binascii.unhexlify(public_key_compressed_hexstr)
-            public_key_uncompressed = pubkey_compressed_to_uncompressed(public_key_compressed)
+            public_key_uncompressed = common_util.pubkey_compressed_to_uncompressed(public_key_compressed)
             addr_p2pkh_uncompressed = p2pkh_util.pubkey_to_addr(public_key_uncompressed)
             addr_p2pkh_compressed = p2pkh_util.pubkey_to_addr(public_key_compressed)
             addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_addr(public_key_compressed)
@@ -120,8 +86,8 @@ def main_entry(argv):
             private_key = wif_util.decode_wif(address_input)
             private_key_wif = wif_util.gen_wif_key(private_key)
             private_key_wif_compressed = wif_util.gen_wif_key(private_key, compressed_WIF=True)
-            public_key_uncompressed = prikey_to_pubkey(private_key, compressed_pubkey=False)
-            public_key_compressed = pubkey_uncompressed_to_compressed(public_key_uncompressed)
+            public_key_uncompressed = common_util.prikey_to_pubkey(private_key, compressed_pubkey=False)
+            public_key_compressed = common_util.pubkey_uncompressed_to_compressed(public_key_uncompressed)
             addr_p2pkh_uncompressed = p2pkh_util.pubkey_to_addr(public_key_uncompressed)
             addr_p2pkh_compressed = p2pkh_util.pubkey_to_addr(public_key_compressed)
             addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_addr(public_key_compressed)
