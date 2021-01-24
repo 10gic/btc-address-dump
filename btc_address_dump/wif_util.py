@@ -1,4 +1,3 @@
-import binascii
 import hashlib
 import base58
 from typing import Union
@@ -6,23 +5,22 @@ from typing import Union
 
 def scrub_input(hex_str_or_bytes: Union[str, bytes]) -> bytes:
     if isinstance(hex_str_or_bytes, str):
-        hex_str_or_bytes = binascii.unhexlify(hex_str_or_bytes)
+        hex_str_or_bytes = bytes.fromhex(hex_str_or_bytes)
     return hex_str_or_bytes
 
 
 # wallet import format key - base58 encoded format
 # https://bitcoin.stackexchange.com/questions/9244/private-key-to-wif
-def gen_wif_key(private_key: Union[str, bytes], compressed_WIF: bool = False) -> bytes:
+def gen_wif_key(private_key: Union[str, bytes], version: bytes, compressed_wif: bool = False) -> bytes:
     private_key = scrub_input(private_key)
 
-    # prepended mainnet version byte to private key
-    mainnet_private_key = b'\x80' + private_key
-    if compressed_WIF:
-        mainnet_private_key = b'\x80' + private_key + b'\x01'
-    # mainnet_private_key = decode_hex('800c28fca386c7a227600b2fe50b7cae11ec86d3bf1fbe471be89827e19d72aa1d')
+    # prepended version byte to private key
+    private_key_with_version = version + private_key
+    if compressed_wif:
+        private_key_with_version = version + private_key + b'\x01'
     # perform SHA-256 hash on the mainnet_private_key
     sha256 = hashlib.sha256()
-    sha256.update(mainnet_private_key)
+    sha256.update(private_key_with_version)
     hash_bytes = sha256.digest()
 
     # perform SHA-256 on the previous SHA-256 hash
@@ -34,11 +32,11 @@ def gen_wif_key(private_key: Union[str, bytes], compressed_WIF: bool = False) ->
     # append the 4 checksum bytes to the mainnet_private_key
     checksum = hash_bytes[:4]
 
-    # print('checksum', binascii.hexlify(checksum))
-    hash_bytes = mainnet_private_key + checksum
-    # print('hash', binascii.hexlify(hash))
+    # print('checksum', checksum.hex())
+    hash_bytes = private_key_with_version + checksum
+    # print('hash', hash_bytes.hex())
 
-    # convert mainnet_private_key + checksum into base58 encoded string
+    # convert private_key_with_version + checksum into base58 encoded string
     return base58.b58encode(hash_bytes)
 
 

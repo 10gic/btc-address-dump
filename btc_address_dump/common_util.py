@@ -10,8 +10,8 @@ def pubkey_compressed_to_uncompressed(compressed_pubkey: bytes) -> bytes:
     y = pow(y_sq, (p + 1) // 4, p)
     if compressed_pubkey[0] % 2 != y % 2:
         y = p - y
-    y = y.to_bytes(32, byteorder='big')
-    return b'\04' + compressed_pubkey[1:33] + y  # x + y
+    y_bytes = y.to_bytes(32, byteorder='big')
+    return b'\04' + compressed_pubkey[1:33] + y_bytes  # x + y
 
 
 def pubkey_uncompressed_to_compressed(uncompressed_pubkey: bytes) -> bytes:
@@ -37,13 +37,13 @@ def pubkey_from_bytes_to_point(pubkey: bytes) -> tuple[int, int]:
 
 
 def pubkey_from_point_to_bytes(x: int, y: int, compressed: bool = True) -> bytes:
-    xstr = x.to_bytes(32, byteorder='big')
-    ystr = y.to_bytes(32, byteorder='big')
+    x_bytes = x.to_bytes(32, byteorder='big')
+    y_bytes = y.to_bytes(32, byteorder='big')
     if compressed:
         parity = y & 1
-        return (2 + parity).to_bytes(1, byteorder='big') + xstr
+        return (2 + parity).to_bytes(1, byteorder='big') + x_bytes
     else:
-        return b'\04' + xstr + ystr
+        return b'\04' + x_bytes + y_bytes
 
 
 def prikey_to_pubkey(private_key: bytes, compressed_pubkey: bool = True) -> bytes:

@@ -118,9 +118,8 @@ def encode(hrp: str, witver: int, witprog: bytes) -> Optional[str]:
     return ret
 
 
-def pubkey_to_segwit_addr(pubkey: bytes) -> Optional[str]:
-    hrp = "bc"  # "bc" for mainnet, "tb" for testnet
+def pubkey_to_segwit_addr(human_readable_part: str, pubkey: bytes) -> Optional[str]:
     witver = 0
     witprog = ripemd160(sha256(pubkey))
-    addr = encode(hrp, witver, witprog)
+    addr = encode(human_readable_part, witver, witprog)
     return addr

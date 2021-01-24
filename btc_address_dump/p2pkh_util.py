@@ -23,13 +23,11 @@ def compute_cksum(hex_str: bytes) -> bytes:
     return checksum
 
 
-def pubkey_to_addr(pubkey: bytes) -> bytes:
+def pubkey_to_addr(pubkey: bytes, version: bytes) -> bytes:
     out1 = sha256(pubkey)
     # print(binascii.hexlify(out1)) # 448997ae8759eb23d6c6b67de6fc3419006cbf061617c3e07323aaf5bcd53476
     out2 = ripemd160(out1)
     # print(binascii.hexlify(out2)) # bbc1e42a39d05a4cc61752d6963b7f69d09bb27b
-
-    version = b'\x00'              # 0x00 for Main Network, 0x6f for Test Network
 
     checksum = compute_cksum(version + out2)
     # print('checksum', binascii.hexlify(checksum))  # 37fefcd0
