@@ -11,7 +11,8 @@ def scrub_input(hex_str_or_bytes: Union[str, bytes]) -> bytes:
 
 # wallet import format key - base58 encoded format
 # https://bitcoin.stackexchange.com/questions/9244/private-key-to-wif
-def gen_wif_key(private_key: Union[str, bytes], version: bytes, compressed_wif: bool = False) -> bytes:
+def encode_wif(private_key: Union[str, bytes], version: bytes, compressed_wif: bool = False) -> bytes:
+    """ Encode wif format private key """
     private_key = scrub_input(private_key)
 
     # prepended version byte to private key
@@ -41,6 +42,7 @@ def gen_wif_key(private_key: Union[str, bytes], version: bytes, compressed_wif: 
 
 
 def decode_wif(wif: str) -> bytes:
+    """ Decode wif format private key """
     compressed = False
     if wif.startswith('K') or wif.startswith('L'):
         compressed = True

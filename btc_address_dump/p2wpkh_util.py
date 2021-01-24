@@ -1,18 +1,11 @@
-import hashlib
+import os
+import sys
 from typing import Optional, Union
 
+file_path = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+sys.path.insert(0, os.path.abspath(file_path))
 
-def sha256(hex_str: bytes) -> bytes:
-    sha = hashlib.sha256()
-    sha.update(hex_str)
-    return sha.digest()
-
-
-def ripemd160(hex_str: bytes) -> bytes:
-    rip = hashlib.new('ripemd160')
-    rip.update(hex_str)
-    return rip.digest()
-
+import common_util
 
 # From https://github.com/sipa/bech32/blob/master/ref/python/segwit_addr.py
 """Reference implementation for Bech32 and segwit addresses."""
@@ -119,7 +112,8 @@ def encode(hrp: str, witver: int, witprog: bytes) -> Optional[str]:
 
 
 def pubkey_to_segwit_addr(human_readable_part: str, pubkey: bytes) -> Optional[str]:
+    """ Derives bech32 (p2wpkh) address from pubkey """
     witver = 0
-    witprog = ripemd160(sha256(pubkey))
+    witprog = common_util.ripemd160(common_util.sha256(pubkey))
     addr = encode(human_readable_part, witver, witprog)
     return addr

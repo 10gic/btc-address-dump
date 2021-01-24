@@ -17,9 +17,10 @@ Dump btc address from mnemonic words::
   private key (WIF compressed) = L3urFcPsE2yHf5zeQjVSfUB8j8FEzX5cnmhjNsJfqjKgowPP4tmg
   public key (uncompressed) = 044cd0aaeca3b636078583408e75edd77307b5190ca7a48bb9fbc1f2576c17dff1087190d91e26af594e3f8ecd3f4d3596c03c45d3b235da916903c930c6593cc4
   public key (compressed) = 024cd0aaeca3b636078583408e75edd77307b5190ca7a48bb9fbc1f2576c17dff1
-  address (p2pkh uncompressed) = 1Q5RqZctfcNkTPad2tuJSREByd2gB8xs63
-  address (p2pkh compressed) = 12W36tm2jnreFiYdrzfE6cvRaKRbicEpnA
-  address (p2wpkh) = bc1qzp6lz6zy9p7k68r0a7lzfpkdxvj3yapynzuatt
+  legacy address (p2pkh uncompressed) = 1Q5RqZctfcNkTPad2tuJSREByd2gB8xs63
+  legacy address (p2pkh compressed) = 12W36tm2jnreFiYdrzfE6cvRaKRbicEpnA
+  p2sh-segwit address (p2sh p2wpkh) = 3AzXxVUqdzvzEqVmdtmeVqRwc98uqwyh76
+  bech32 address (p2wpkh) = bc1qzp6lz6zy9p7k68r0a7lzfpkdxvj3yapynzuatt
 
 Dump btc address from hex private key::
 
@@ -29,9 +30,10 @@ Dump btc address from hex private key::
   private key (WIF compressed) = L3urFcPsE2yHf5zeQjVSfUB8j8FEzX5cnmhjNsJfqjKgowPP4tmg
   public key (uncompressed) = 044cd0aaeca3b636078583408e75edd77307b5190ca7a48bb9fbc1f2576c17dff1087190d91e26af594e3f8ecd3f4d3596c03c45d3b235da916903c930c6593cc4
   public key (compressed) = 024cd0aaeca3b636078583408e75edd77307b5190ca7a48bb9fbc1f2576c17dff1
-  address (p2pkh uncompressed) = 1Q5RqZctfcNkTPad2tuJSREByd2gB8xs63
-  address (p2pkh compressed) = 12W36tm2jnreFiYdrzfE6cvRaKRbicEpnA
-  address (p2wpkh) = bc1qzp6lz6zy9p7k68r0a7lzfpkdxvj3yapynzuatt
+  legacy address (p2pkh uncompressed) = 1Q5RqZctfcNkTPad2tuJSREByd2gB8xs63
+  legacy address (p2pkh compressed) = 12W36tm2jnreFiYdrzfE6cvRaKRbicEpnA
+  p2sh-segwit address (p2sh p2wpkh) = 3AzXxVUqdzvzEqVmdtmeVqRwc98uqwyh76
+  bech32 address (p2wpkh) = bc1qzp6lz6zy9p7k68r0a7lzfpkdxvj3yapynzuatt
 
 Dump btc address from WIF private key::
 
@@ -41,27 +43,30 @@ Dump btc address from WIF private key::
   private key (WIF compressed) = L3urFcPsE2yHf5zeQjVSfUB8j8FEzX5cnmhjNsJfqjKgowPP4tmg
   public key (uncompressed) = 044cd0aaeca3b636078583408e75edd77307b5190ca7a48bb9fbc1f2576c17dff1087190d91e26af594e3f8ecd3f4d3596c03c45d3b235da916903c930c6593cc4
   public key (compressed) = 024cd0aaeca3b636078583408e75edd77307b5190ca7a48bb9fbc1f2576c17dff1
-  address (p2pkh uncompressed) = 1Q5RqZctfcNkTPad2tuJSREByd2gB8xs63
-  address (p2pkh compressed) = 12W36tm2jnreFiYdrzfE6cvRaKRbicEpnA
-  address (p2wpkh) = bc1qzp6lz6zy9p7k68r0a7lzfpkdxvj3yapynzuatt
+  legacy address (p2pkh uncompressed) = 1Q5RqZctfcNkTPad2tuJSREByd2gB8xs63
+  legacy address (p2pkh compressed) = 12W36tm2jnreFiYdrzfE6cvRaKRbicEpnA
+  p2sh-segwit address (p2sh p2wpkh) = 3AzXxVUqdzvzEqVmdtmeVqRwc98uqwyh76
+  bech32 address (p2wpkh) = bc1qzp6lz6zy9p7k68r0a7lzfpkdxvj3yapynzuatt
 
 Dump btc address from public key::
 
   $ btc_address_dump 044cd0aaeca3b636078583408e75edd77307b5190ca7a48bb9fbc1f2576c17dff1087190d91e26af594e3f8ecd3f4d3596c03c45d3b235da916903c930c6593cc4
   public key (uncompressed) = 044cd0aaeca3b636078583408e75edd77307b5190ca7a48bb9fbc1f2576c17dff1087190d91e26af594e3f8ecd3f4d3596c03c45d3b235da916903c930c6593cc4
   public key (compressed) = 024cd0aaeca3b636078583408e75edd77307b5190ca7a48bb9fbc1f2576c17dff1
-  address (p2pkh uncompressed) = 1Q5RqZctfcNkTPad2tuJSREByd2gB8xs63
-  address (p2pkh compressed) = 12W36tm2jnreFiYdrzfE6cvRaKRbicEpnA
-  address (p2wpkh) = bc1qzp6lz6zy9p7k68r0a7lzfpkdxvj3yapynzuatt
+  legacy address (p2pkh uncompressed) = 1Q5RqZctfcNkTPad2tuJSREByd2gB8xs63
+  legacy address (p2pkh compressed) = 12W36tm2jnreFiYdrzfE6cvRaKRbicEpnA
+  p2sh-segwit address (p2sh p2wpkh) = 3AzXxVUqdzvzEqVmdtmeVqRwc98uqwyh76
+  bech32 address (p2wpkh) = bc1qzp6lz6zy9p7k68r0a7lzfpkdxvj3yapynzuatt
 
 Dump btc address from compressed public key::
 
   $ btc_address_dump 024cd0aaeca3b636078583408e75edd77307b5190ca7a48bb9fbc1f2576c17dff1
   public key (uncompressed) = 044cd0aaeca3b636078583408e75edd77307b5190ca7a48bb9fbc1f2576c17dff1087190d91e26af594e3f8ecd3f4d3596c03c45d3b235da916903c930c6593cc4
   public key (compressed) = 024cd0aaeca3b636078583408e75edd77307b5190ca7a48bb9fbc1f2576c17dff1
-  address (p2pkh uncompressed) = 1Q5RqZctfcNkTPad2tuJSREByd2gB8xs63
-  address (p2pkh compressed) = 12W36tm2jnreFiYdrzfE6cvRaKRbicEpnA
-  address (p2wpkh) = bc1qzp6lz6zy9p7k68r0a7lzfpkdxvj3yapynzuatt
+  legacy address (p2pkh uncompressed) = 1Q5RqZctfcNkTPad2tuJSREByd2gB8xs63
+  legacy address (p2pkh compressed) = 12W36tm2jnreFiYdrzfE6cvRaKRbicEpnA
+  p2sh-segwit address (p2sh p2wpkh) = 3AzXxVUqdzvzEqVmdtmeVqRwc98uqwyh76
+  bech32 address (p2wpkh) = bc1qzp6lz6zy9p7k68r0a7lzfpkdxvj3yapynzuatt
 
 Installation
 ============
