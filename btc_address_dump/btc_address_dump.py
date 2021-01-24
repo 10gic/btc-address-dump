@@ -31,7 +31,7 @@ def main_entry(argv):
     parser.add_argument(
         "-c",
         "--chain",
-        help="specify btc chain, can be main or test",
+        help="specify btc chain, can be main (default) or test",
         metavar='main|test',
         default="main",
         dest="chain",
@@ -109,7 +109,14 @@ def main_entry(argv):
         addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
         addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
         addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_addr(human_readable_part, public_key_compressed)
-    elif inputs.startswith("5") or inputs.startswith("K") or inputs.startswith("L"):
+    elif inputs.startswith('5') or inputs.startswith('K') or inputs.startswith('L') or \
+            inputs.startswith('9') or inputs.startswith('c'):
+        if (inputs.startswith('5') or inputs.startswith('K') or inputs.startswith('L')) and chain == "test":
+            sys.stderr.write("found wif private key starts with 5/K/L, you should specify --chain=main\n")
+            sys.exit(1)
+        if (inputs.startswith('9') or inputs.startswith('c')) and chain == "main":
+            sys.stderr.write("found wif private key starts with 9/c, you should specify --chain=test\n")
+            sys.exit(1)
         private_key = wif_util.decode_wif(inputs)
         private_key_wif = wif_util.encode_wif(private_key, wif_version_bytes)
         private_key_wif_compressed = wif_util.encode_wif(private_key, wif_version_bytes, compressed_wif=True)

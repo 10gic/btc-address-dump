@@ -44,7 +44,9 @@ def encode_wif(private_key: Union[str, bytes], version: bytes, compressed_wif: b
 def decode_wif(wif: str) -> bytes:
     """ Decode wif format private key """
     compressed = False
-    if wif.startswith('K') or wif.startswith('L'):
+    assert wif.startswith('5') or wif.startswith('K') or wif.startswith('L') or \
+           wif.startswith('9') or wif.startswith('c')  # Testnet Private key
+    if wif.startswith('K') or wif.startswith('L') or wif.startswith('c'):
         compressed = True
     decoded = base58.b58decode(wif)
     if compressed:
