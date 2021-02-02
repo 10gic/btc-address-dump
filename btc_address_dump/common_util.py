@@ -1,5 +1,6 @@
 import ecdsa
 import hashlib
+from typing import Tuple
 from ecdsa.ellipticcurve import PointJacobi
 
 
@@ -52,7 +53,7 @@ def pubkey_uncompressed_to_compressed(uncompressed_pubkey: bytes) -> bytes:
     return compressed_public_key
 
 
-def pubkey_from_bytes_to_point(pubkey: bytes) -> tuple[int, int]:
+def pubkey_from_bytes_to_point(pubkey: bytes) -> Tuple[int, int]:
     """ Returns the x y coordinate of a pubkey (can be uncompressed or compressed) """
     assert len(pubkey) == 33 or len(pubkey) == 65
     if len(pubkey) == 33:  # compressed pubkey

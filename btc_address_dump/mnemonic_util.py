@@ -5,6 +5,7 @@ import hmac
 import struct
 import os
 import sys
+from typing import List, Tuple
 
 from ecdsa.curves import SECP256k1
 from ecdsa.ellipticcurve import Point, PointJacobi
@@ -35,7 +36,7 @@ def mnemonic_to_bip39seed(mnemonic: str, passphrase: str = "") -> bytes:
     return hashlib.pbkdf2_hmac('sha512', mnemonic, salt, BIP39_PBKDF2_ROUNDS)
 
 
-def bip39seed_to_bip32masternode(seed: bytes) -> tuple[bytes, bytes]:
+def bip39seed_to_bip32masternode(seed: bytes) -> Tuple[bytes, bytes]:
     """ BIP32 master node derivation from a bip39 seed.
         Logic adapted from https://github.com/satoshilabs/slips/blob/master/slip-0010/testvectors.py. """
     h = hmac.new(BIP32_SEED_MODIFIER, seed, hashlib.sha512).digest()
@@ -43,7 +44,7 @@ def bip39seed_to_bip32masternode(seed: bytes) -> tuple[bytes, bytes]:
     return key, chain_code
 
 
-def derive_bip32childkey(parent_key: bytes, parent_chain_code: bytes, index: int) -> tuple[bytes, bytes]:
+def derive_bip32childkey(parent_key: bytes, parent_chain_code: bytes, index: int) -> Tuple[bytes, bytes]:
     """ Derives a child key from an existing key, index is current derivation parameter.
         Support:
         1. parent private key -> child private key, in this case, parent_key must be 32 bytes
@@ -92,7 +93,7 @@ def derive_bip32childkey(parent_key: bytes, parent_chain_code: bytes, index: int
     return key, chain_code
 
 
-def parse_derivation_path(str_derivation_path: str) -> list[int]:
+def parse_derivation_path(str_derivation_path: str) -> List[int]:
     """ Parses a derivation path such as "m/44'/60/0'/0" and returns
         list of integers for each element in path. """
     path = []
