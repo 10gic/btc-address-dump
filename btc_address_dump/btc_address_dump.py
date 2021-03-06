@@ -22,6 +22,8 @@ def main_entry(argv):
     private_key_wif_compressed = b''
     public_key_uncompressed = b''
     public_key_compressed = b''
+    public_key_uncompressed_hash160 = b''
+    public_key_compressed_hash160 = b''
     addr_p2pkh_uncompressed = b''
     addr_p2pkh_compressed = b''
     addr_p2sh_p2wpkh = b''
@@ -62,6 +64,8 @@ def main_entry(argv):
         private_key_wif_compressed = wif_util.encode_wif(private_key, wif_version_bytes, compressed_wif=True)
         public_key_uncompressed = common_util.prikey_to_pubkey(private_key, compressed=False)
         public_key_compressed = common_util.pubkey_uncompressed_to_compressed(public_key_uncompressed)
+        public_key_uncompressed_hash160 = p2pkh_util.pubkey_to_hash_160(public_key_uncompressed)
+        public_key_compressed_hash160 = p2pkh_util.pubkey_to_hash_160(public_key_compressed)
         addr_p2pkh_uncompressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_uncompressed, pubkey_version_bytes)
         addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
         addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
@@ -77,6 +81,8 @@ def main_entry(argv):
         private_key_wif_compressed = wif_util.encode_wif(private_key, wif_version_bytes, compressed_wif=True)
         public_key_uncompressed = common_util.prikey_to_pubkey(private_key, compressed=False)
         public_key_compressed = common_util.pubkey_uncompressed_to_compressed(public_key_uncompressed)
+        public_key_uncompressed_hash160 = p2pkh_util.pubkey_to_hash_160(public_key_uncompressed)
+        public_key_compressed_hash160 = p2pkh_util.pubkey_to_hash_160(public_key_compressed)
         addr_p2pkh_uncompressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_uncompressed, pubkey_version_bytes)
         addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
         addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
@@ -93,6 +99,8 @@ def main_entry(argv):
         public_key_hex = inputs[-128:]  # keep last 128 (remove leading 0x04, 0x, 04)
         public_key_uncompressed = b'\04' + bytes.fromhex(public_key_hex)
         public_key_compressed = common_util.pubkey_uncompressed_to_compressed(public_key_uncompressed)
+        public_key_uncompressed_hash160 = p2pkh_util.pubkey_to_hash_160(public_key_uncompressed)
+        public_key_compressed_hash160 = p2pkh_util.pubkey_to_hash_160(public_key_compressed)
         addr_p2pkh_uncompressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_uncompressed, pubkey_version_bytes)
         addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
         addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
@@ -105,6 +113,8 @@ def main_entry(argv):
         public_key_compressed_hexstr = inputs.lower().replace('0x', '')
         public_key_compressed = bytes.fromhex(public_key_compressed_hexstr)
         public_key_uncompressed = common_util.pubkey_compressed_to_uncompressed(public_key_compressed)
+        public_key_uncompressed_hash160 = p2pkh_util.pubkey_to_hash_160(public_key_uncompressed)
+        public_key_compressed_hash160 = p2pkh_util.pubkey_to_hash_160(public_key_compressed)
         addr_p2pkh_uncompressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_uncompressed, pubkey_version_bytes)
         addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
         addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
@@ -122,6 +132,8 @@ def main_entry(argv):
         private_key_wif_compressed = wif_util.encode_wif(private_key, wif_version_bytes, compressed_wif=True)
         public_key_uncompressed = common_util.prikey_to_pubkey(private_key, compressed=False)
         public_key_compressed = common_util.pubkey_uncompressed_to_compressed(public_key_uncompressed)
+        public_key_uncompressed_hash160 = p2pkh_util.pubkey_to_hash_160(public_key_uncompressed)
+        public_key_compressed_hash160 = p2pkh_util.pubkey_to_hash_160(public_key_compressed)
         addr_p2pkh_uncompressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_uncompressed, pubkey_version_bytes)
         addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
         addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
@@ -142,6 +154,10 @@ def main_entry(argv):
         print("public key (uncompressed) = {}".format(public_key_uncompressed.hex()))
     if public_key_compressed:
         print("public key (compressed) = {}".format(public_key_compressed.hex()))
+    if public_key_uncompressed_hash160:
+        print("hash160 of uncompressed public key = {}".format(public_key_uncompressed_hash160.hex()))
+    if public_key_compressed_hash160:
+        print("hash160 of compressed public key = {}".format(public_key_compressed_hash160.hex()))
     if addr_p2pkh_uncompressed:
         print("legacy address (p2pkh uncompressed) = {}".format(addr_p2pkh_uncompressed.decode('ascii')))
     if addr_p2pkh_compressed:

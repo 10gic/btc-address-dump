@@ -8,6 +8,13 @@ sys.path.insert(0, os.path.abspath(file_path))
 import common_util
 
 
+def pubkey_to_hash_160(pubkey: bytes) -> bytes:
+    """ Computes ripemd160(sha256(pubkey)) """
+    out1 = common_util.sha256(pubkey)
+    out2 = common_util.ripemd160(out1)
+    return out2
+
+
 def pubkey_to_p2pkh_addr(pubkey: bytes, version: bytes) -> bytes:
     """ Derives legacy (p2pkh) address from pubkey """
     out1 = common_util.sha256(pubkey)
