@@ -111,6 +111,14 @@ def encode(hrp: str, witver: int, witprog: bytes) -> Optional[str]:
     return ret
 
 
+def hash160_to_segwit_addr(human_readable_part: str, hash160: bytes) -> Optional[str]:
+    """ Derives bech32 (p2wpkh) address from hash160 of pubkey, eg. ripemd160(sha256(pubkey)) """
+    witver = 0
+    witprog = hash160
+    addr = encode(human_readable_part, witver, witprog)
+    return addr
+
+
 def pubkey_to_segwit_addr(human_readable_part: str, pubkey: bytes) -> Optional[str]:
     """ Derives bech32 (p2wpkh) address from pubkey """
     witver = 0

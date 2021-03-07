@@ -78,6 +78,13 @@ Dump btc address from compressed public key::
   p2sh-segwit address (p2sh p2wpkh) = 3AzXxVUqdzvzEqVmdtmeVqRwc98uqwyh76
   bech32 address (p2wpkh) = bc1qzp6lz6zy9p7k68r0a7lzfpkdxvj3yapynzuatt
 
+Dump btc address from hash160 of public key::
+
+  $ btc_address_dump 1075f16844287d6d1c6fefbe2486cd3325127424
+  hash160 of public key = 1075f16844287d6d1c6fefbe2486cd3325127424
+  legacy address (p2pkh) = 12W36tm2jnreFiYdrzfE6cvRaKRbicEpnA
+  bech32 address (only valid if input is hash160 of compressed public key) = bc1qzp6lz6zy9p7k68r0a7lzfpkdxvj3yapynzuatt
+
 Installation
 ============
 
