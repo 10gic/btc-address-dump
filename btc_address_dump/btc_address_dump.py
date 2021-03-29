@@ -125,6 +125,7 @@ def main_entry(argv):
         # sys.stderr.write("you input hash160 of public key\n")
         public_key_hash160 = bytes.fromhex(inputs.lower().replace('0x', ''))
         addr_p2pkh = p2pkh_util.hash160_to_p2pkh_addr(public_key_hash160, pubkey_version_bytes)
+        addr_p2sh_p2wpkh = p2sh_p2wpkh_util.hash160_to_p2sh_p2wpkh_addr(public_key_hash160, script_version_bytes)
         addr_p2wpkh = p2wpkh_util.hash160_to_segwit_addr(human_readable_part, public_key_hash160)
     elif inputs.startswith('5') or inputs.startswith('K') or inputs.startswith('L') or \
             inputs.startswith('9') or inputs.startswith('c'):
@@ -174,10 +175,13 @@ def main_entry(argv):
     if addr_p2pkh:
         print("legacy address (p2pkh) = {}".format(addr_p2pkh.decode('ascii')))
     if addr_p2sh_p2wpkh:
-        print("p2sh-segwit address (p2sh p2wpkh) = {}".format(addr_p2sh_p2wpkh.decode('ascii')))
+        if public_key_hash160:
+            print("p2sh-segwit address (only valid if input is hash160 of COMPRESSED public key) = {}".format(addr_p2sh_p2wpkh.decode('ascii')))
+        else:
+            print("p2sh-segwit address (p2sh p2wpkh) = {}".format(addr_p2sh_p2wpkh.decode('ascii')))
     if addr_p2wpkh:
         if public_key_hash160:
-            print("bech32 address (only valid if input is hash160 of compressed public key) = {}".format(addr_p2wpkh))
+            print("bech32 address (only valid if input is hash160 of COMPRESSED public key) = {}".format(addr_p2wpkh))
         else:
             print("bech32 address (p2wpkh) = {}".format(addr_p2wpkh))
 
