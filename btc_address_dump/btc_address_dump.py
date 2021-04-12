@@ -40,9 +40,18 @@ def main_entry(argv):
         default="main",
         dest="chain",
         choices=["main", "test"])
+    parser.add_argument(
+        "-d",
+        "--derivation",
+        help="specify derivation path scheme, only applicable when input mnemonic words",
+        metavar='bip44|bip49|bip84',
+        default="bip44",
+        dest="derivation",
+        choices=["bip44", "bip49", "bip84"])
     parser.add_argument("inputs", metavar="mnemonic-words|private-key|public-key")
     args = parser.parse_args(argv[1:])
     chain = args.chain
+    derivation = args.derivation
     inputs = args.inputs
 
     # See https://en.bitcoin.it/wiki/List_of_address_prefixes
@@ -61,17 +70,23 @@ def main_entry(argv):
         # For example: olympic wine chicken argue unaware bundle tunnel grid spider slot spell need
         # sys.stderr.write("you input mnemonic\n")
         mnemonic = inputs
-        private_key = mnemonic_util.mnemonic_to_private_key(mnemonic)
+        derivation_path = {'bip44': mnemonic_util.BIP44_DERIVATION_PATH,
+                           'bip49': mnemonic_util.BIP49_DERIVATION_PATH,
+                           'bip84': mnemonic_util.BIP84_DERIVATION_PATH}.get(derivation)
+        private_key = mnemonic_util.mnemonic_to_private_key(mnemonic, derivation_path)
         private_key_wif = wif_util.encode_wif(private_key, wif_version_bytes)
         private_key_wif_compressed = wif_util.encode_wif(private_key, wif_version_bytes, compressed_wif=True)
-        public_key_uncompressed = common_util.prikey_to_pubkey(private_key, compressed=False)
-        public_key_compressed = common_util.pubkey_uncompressed_to_compressed(public_key_uncompressed)
-        public_key_uncompressed_hash160 = p2pkh_util.pubkey_to_hash160(public_key_uncompressed)
+        public_key_compressed = common_util.prikey_to_pubkey(private_key, compressed=True)
         public_key_compressed_hash160 = p2pkh_util.pubkey_to_hash160(public_key_compressed)
-        addr_p2pkh_uncompressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_uncompressed, pubkey_version_bytes)
-        addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
-        addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
-        addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_addr(human_readable_part, public_key_compressed)
+        if derivation == "bip44":
+            # For legacy address
+            addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
+        elif derivation == "bip49":
+            # For p2sh-segwit address
+            addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
+        elif derivation == "bip84":
+            # For bech32 address
+            addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_addr(human_readable_part, public_key_compressed)
     elif (len(inputs) == 66 and inputs.startswith("0x")) or len(inputs) == 64:
         # sys.stderr.write("you input private key\n")
         # private key
@@ -176,7 +191,8 @@ def main_entry(argv):
         print("legacy address (p2pkh) = {}".format(addr_p2pkh.decode('ascii')))
     if addr_p2sh_p2wpkh:
         if public_key_hash160:
-            print("p2sh-segwit address (only valid if input is hash160 of COMPRESSED public key) = {}".format(addr_p2sh_p2wpkh.decode('ascii')))
+            print("p2sh-segwit address (only valid if input is hash160 of COMPRESSED public key) = {}".format(
+                addr_p2sh_p2wpkh.decode('ascii')))
         else:
             print("p2sh-segwit address (p2sh p2wpkh) = {}".format(addr_p2sh_p2wpkh.decode('ascii')))
     if addr_p2wpkh:

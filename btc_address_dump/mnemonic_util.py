@@ -21,11 +21,9 @@ BIP32_PRIVDEV = 0x80000000
 BIP32_CURVE = SECP256k1
 BIP32_SEED_MODIFIER = b'Bitcoin seed'  # https://en.bitcoin.it/wiki/BIP_0032
 
-LEDGER_ETH_DERIVATION_PATH = "m/44'/0'/0'/0/0"
-# bip44 define 5 levels in BIP32 path: m / purpose' / coin_type' / account' / change / address_index
-# for bip44, purpose = 44
-# for eth, coin_type = 60
-# Registered coin types for BIP-0044, see https://github.com/satoshilabs/slips/blob/master/slip-0044.md
+BIP44_DERIVATION_PATH = "m/44'/0'/0'/0/0"
+BIP49_DERIVATION_PATH = "m/49'/0'/0'/0/0"
+BIP84_DERIVATION_PATH = "m/84'/0'/0'/0/0"
 
 
 def mnemonic_to_bip39seed(mnemonic: str, passphrase: str = "") -> bytes:
@@ -108,7 +106,7 @@ def parse_derivation_path(str_derivation_path: str) -> List[int]:
     return path
 
 
-def mnemonic_to_private_key(mnemonic: str, str_derivation_path: str = LEDGER_ETH_DERIVATION_PATH,
+def mnemonic_to_private_key(mnemonic: str, str_derivation_path: str = BIP44_DERIVATION_PATH,
                             passphrase: str = "") -> bytes:
     """ Performs all convertions to get a private key from a mnemonic sentence, including:
 
