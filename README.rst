@@ -31,6 +31,7 @@ Dump btc address from mnemonic words (bip49, P2WPKH-nested-in-P2SH)::
   p2sh-segwit address (p2sh p2wpkh) = 3G3MUYikYqnTLYDzAa1PwxnughktzJydJw
 
 Dump btc address from mnemonic words (bip84, P2WPKH)::
+
   $ btc_address_dump -d bip84 "olympic wine chicken argue unaware bundle tunnel grid spider slot spell need"
   mnemonic = olympic wine chicken argue unaware bundle tunnel grid spider slot spell need
   private key (hex) = 87d563c902808568dbed8f52eabaf51e5cc7c3e59ec747b5efc0ed2e3cafabeb
