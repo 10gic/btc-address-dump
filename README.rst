@@ -103,6 +103,12 @@ Dump btc address from hash160 of public key::
   p2sh-segwit address (only valid if input is hash160 of COMPRESSED public key) = 3AzXxVUqdzvzEqVmdtmeVqRwc98uqwyh76
   bech32 address (only valid if input is hash160 of COMPRESSED public key) = bc1qzp6lz6zy9p7k68r0a7lzfpkdxvj3yapynzuatt
 
+Bitcoin fork
+============
+
+Currently, Litecoin is supported. Just use `-c ltc`.
+
+
 Installation
 ============
 
