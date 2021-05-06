@@ -21,9 +21,23 @@ BIP32_PRIVDEV = 0x80000000
 BIP32_CURVE = SECP256k1
 BIP32_SEED_MODIFIER = b'Bitcoin seed'  # https://en.bitcoin.it/wiki/BIP_0032
 
-BIP44_DERIVATION_PATH = "m/44'/0'/0'/0/0"
-BIP49_DERIVATION_PATH = "m/49'/0'/0'/0/0"
-BIP84_DERIVATION_PATH = "m/84'/0'/0'/0/0"
+DERIVATION_PATH = {
+    "btc": {
+        "bip44": "m/44'/0'/0'/0/0",
+        "bip49": "m/49'/0'/0'/0/0",
+        "bip84": "m/84'/0'/0'/0/0"
+    },
+    "test": {  # Testnet (all coins)
+        "bip44": "m/44'/1'/0'/0/0",
+        "bip49": "m/49'/1'/0'/0/0",
+        "bip84": "m/84'/1'/0'/0/0"
+    },
+    "ltc": {
+        "bip44": "m/44'/2'/0'/0/0",
+        "bip49": "m/49'/2'/0'/0/0",
+        "bip84": "m/84'/2'/0'/0/0"
+    }
+}
 
 
 def mnemonic_to_bip39seed(mnemonic: str, passphrase: str = "") -> bytes:
@@ -106,8 +120,7 @@ def parse_derivation_path(str_derivation_path: str) -> List[int]:
     return path
 
 
-def mnemonic_to_private_key(mnemonic: str, str_derivation_path: str = BIP44_DERIVATION_PATH,
-                            passphrase: str = "") -> bytes:
+def mnemonic_to_private_key(mnemonic: str, str_derivation_path: str, passphrase: str = "") -> bytes:
     """ Performs all convertions to get a private key from a mnemonic sentence, including:
 
             BIP39 mnemonic to seed

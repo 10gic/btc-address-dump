@@ -82,9 +82,10 @@ def main_entry(argv):
         # For example: olympic wine chicken argue unaware bundle tunnel grid spider slot spell need
         # sys.stderr.write("you input mnemonic\n")
         mnemonic = inputs
-        derivation_path = {'bip44': mnemonic_util.BIP44_DERIVATION_PATH,
-                           'bip49': mnemonic_util.BIP49_DERIVATION_PATH,
-                           'bip84': mnemonic_util.BIP84_DERIVATION_PATH}.get(derivation)
+        if chain.endswith("test"):
+            derivation_path = mnemonic_util.DERIVATION_PATH["test"][derivation]
+        else:
+            derivation_path = mnemonic_util.DERIVATION_PATH[chain][derivation]
         private_key = mnemonic_util.mnemonic_to_private_key(mnemonic, derivation_path)
         private_key_wif = wif_util.encode_wif(private_key, wif_version_bytes)
         private_key_wif_compressed = wif_util.encode_wif(private_key, wif_version_bytes, compressed_wif=True)
