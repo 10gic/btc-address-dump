@@ -36,10 +36,10 @@ def main_entry(argv):
         "-c",
         "--chain",
         help="specify btc chain, can be main (default) or test",
-        metavar='main|test',
-        default="main",
+        metavar='btc|btc-test|ltc|ltc-test',
+        default="btc",
         dest="chain",
-        choices=["main", "test"])
+        choices=["btc", "btc-test", "ltc", "ltc-test"])
     parser.add_argument(
         "-d",
         "--derivation",
@@ -59,11 +59,23 @@ def main_entry(argv):
     script_version_bytes = b'\x05'  # 0x05 for mainnet, 0xc4 for testnet
     wif_version_bytes = b'\x80'  # 0x80 for mainnet, 0xef for testnet
     human_readable_part = "bc"  # "bc" for mainnet, and "tb" for testnet
-    if chain == "test":
+    if chain == "btc-test":
         pubkey_version_bytes = b'\x6f'
         script_version_bytes = b'\xc4'
         wif_version_bytes = b'\xef'
         human_readable_part = "tb"
+    elif chain == "ltc":
+        # https://github.com/litecoin-project/litecoin/blob/81c4f2d80fbd33d127ff9b31bf588e4925599d79/src/chainparams.cpp#L128
+        pubkey_version_bytes = b'\x30'
+        script_version_bytes = b'\x32'
+        wif_version_bytes = b'\xb0'
+        human_readable_part = "ltc"
+    elif chain == "ltc-test":
+        # https://github.com/litecoin-project/litecoin/blob/81c4f2d80fbd33d127ff9b31bf588e4925599d79/src/chainparams.cpp#L237
+        pubkey_version_bytes = b'\x6f'
+        script_version_bytes = b'\x3a'
+        wif_version_bytes = b'\xef'
+        human_readable_part = "tltc"
 
     if re.search("^([a-zA-Z]+\\s){11}([a-zA-Z]+).*$", inputs):
         # 12 mnemonic words
@@ -142,14 +154,11 @@ def main_entry(argv):
         addr_p2pkh = p2pkh_util.hash160_to_p2pkh_addr(public_key_hash160, pubkey_version_bytes)
         addr_p2sh_p2wpkh = p2sh_p2wpkh_util.hash160_to_p2sh_p2wpkh_addr(public_key_hash160, script_version_bytes)
         addr_p2wpkh = p2wpkh_util.hash160_to_segwit_addr(human_readable_part, public_key_hash160)
-    elif inputs.startswith('5') or inputs.startswith('K') or inputs.startswith('L') or \
-            inputs.startswith('9') or inputs.startswith('c'):
-        if (inputs.startswith('5') or inputs.startswith('K') or inputs.startswith('L')) and chain == "test":
-            sys.stderr.write("found wif private key starts with 5/K/L, you should specify --chain=main\n")
-            sys.exit(1)
-        if (inputs.startswith('9') or inputs.startswith('c')) and chain == "main":
-            sys.stderr.write("found wif private key starts with 9/c, you should specify --chain=test\n")
-            sys.exit(1)
+    elif wif_util.is_valid_wif(inputs):
+        if chain == "btc":
+            assert inputs.startswith('5') or inputs.startswith('K') or inputs.startswith('L')
+        if chain == "btc-test":
+            assert inputs.startswith('9') or inputs.startswith('c')
         private_key = wif_util.decode_wif(inputs)
         private_key_wif = wif_util.encode_wif(private_key, wif_version_bytes)
         private_key_wif_compressed = wif_util.encode_wif(private_key, wif_version_bytes, compressed_wif=True)

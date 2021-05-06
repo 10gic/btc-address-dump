@@ -41,16 +41,20 @@ def encode_wif(private_key: Union[str, bytes], version: bytes, compressed_wif: b
     return base58.b58encode(hash_bytes)
 
 
-def decode_wif(wif: str) -> bytes:
+def decode_wif(wif: str, compressed_wif: bool = False) -> bytes:
     """ Decode wif format private key """
-    compressed = False
-    assert wif.startswith('5') or wif.startswith('K') or wif.startswith('L') or \
-           wif.startswith('9') or wif.startswith('c')  # Testnet Private key
-    if wif.startswith('K') or wif.startswith('L') or wif.startswith('c'):
-        compressed = True
     decoded = base58.b58decode(wif)
-    if compressed:
-        private_key = decoded[1:-5]  # [80 xxx 1 checksum]
+    if len(decoded) == 38 or len(decoded) == 37:
+        private_key = decoded[1:33]  # WIF-compressed: [0x80 xxxx 0x01 checksum] or WIF: [0x80 xxxx checksum]
     else:
-        private_key = decoded[1:-4]  # [80 xxx checksum]
+        raise ValueError("invalid WIF")
     return private_key
+
+
+def is_valid_wif(wif: str) -> bool:
+    """ Check if wif is valid"""
+    try:
+        base58.b58decode_check(wif)
+        return True
+    except ValueError:
+        return False
