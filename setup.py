@@ -10,7 +10,7 @@ requirements = [
 
 setup(
     name='btc-address-dump',
-    version='0.2.1',
+    version='0.2.4',
     author='cig01',
     url='https://github.com/10gic/btc-address-dump',
     license='MIT License',
@@ -19,6 +19,7 @@ setup(
     install_requires=["ecdsa", "base58"],
     python_requires='>=3',
     packages=['btc_address_dump'],
+    include_package_data=True,
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Console',

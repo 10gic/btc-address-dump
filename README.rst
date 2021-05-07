@@ -103,11 +103,25 @@ Dump btc address from hash160 of public key::
   p2sh-segwit address (only valid if input is hash160 of COMPRESSED public key) = 3AzXxVUqdzvzEqVmdtmeVqRwc98uqwyh76
   bech32 address (only valid if input is hash160 of COMPRESSED public key) = bc1qzp6lz6zy9p7k68r0a7lzfpkdxvj3yapynzuatt
 
-Bitcoin fork
-============
+Bitcoin forks
+=============
 
-Currently, Litecoin is supported. Just use `-c ltc`.
+Bitcoin forks are supported. You can use `-c` to change chain. Here is an example of litecoin:
 
+  $ btc_address_dump -c ltc 6vazLaTvDG6Nh1CkhMTeLN5dPHjSq3cZAoET8FvDut9FUH71pp9
+  private key (hex) = c0ef9854e33b0037c88c861fdf32d3df33f6a74f0cef9b696a31f5452b2aaa54
+  private key (WIF) = 6vazLaTvDG6Nh1CkhMTeLN5dPHjSq3cZAoET8FvDut9FUH71pp9
+  private key (WIF compressed) = T9X25Qhos7cijZtss7JbnU3RbNrM14XvzF4NK2quzQjQsEQw8iVL
+  public key (uncompressed) = 043a0b64eee7e82b80e3e5a02cc9df3f08e1c534bd8b64846f5d556d38af6d9eb2a1729dcb14b66fbb8b57caa7d27f9852096a14c9cb8dc65093f9135d5b6e17a8
+  public key (compressed) = 023a0b64eee7e82b80e3e5a02cc9df3f08e1c534bd8b64846f5d556d38af6d9eb2
+  hash160 of uncompressed public key = ffd04e9fca28b32ef5656e4e224d06256fca20ea
+  hash160 of compressed public key = 3c49068b96181b8d40a4272f69faadc5f722e8b9
+  legacy address (p2pkh uncompressed) = LiYa7ZaqerPbbtad6oxds4wCqYF9v1XH83
+  legacy address (p2pkh compressed) = LQiiHdPZmAsHNwSngex6fQgPUDDd1Ky47j
+  p2sh-segwit address (p2sh p2wpkh) = MNNZtmjz5HehvjvLxM89c5oXRp1g9hRT9E
+  bech32 address (p2wpkh) = ltc1q83ysdzukrqdc6s9yyuhkn74dchmj969e8tjw92
+
+If your favorite coin is not supported, just add it to coins.yaml, and create a pull request.
 
 Installation
 ============
