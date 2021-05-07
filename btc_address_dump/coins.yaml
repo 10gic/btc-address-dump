@@ -1,0 +1,67 @@
+# Registered coin types: https://github.com/satoshilabs/slips/blob/master/slip-0044.md
+btc:
+  src_code: https://github.com/bitcoin/bitcoin
+  base58_prefix:
+    pubkey: 0
+    script: 5
+    wif: 128
+  bech32_hrp: bc
+  hd_path:
+    bip44: m/44'/0'/0'/0/0
+    bip49: m/49'/0'/0'/0/0
+    bip84: m/84'/0'/0'/0/0
+btc_test:
+  src_code: https://github.com/bitcoin/bitcoin
+  base58_prefix:
+    pubkey: 111
+    script: 196
+    wif: 239
+  bech32_hrp: tb
+  hd_path:
+    bip44: m/44'/1'/0'/0/0
+    bip49: m/49'/1'/0'/0/0
+    bip84: m/84'/1'/0'/0/0
+dog:
+  src_code: https://github.com/dogecoin/dogecoin
+  base58_prefix:
+    pubkey: 30
+    script: 22
+    wif: 158
+  bech32_hrp:
+  hd_path:
+    bip44: m/44'/3'/0'/0/0
+    bip49: m/49'/3'/0'/0/0
+    bip84:
+dog_test:
+  src_code: https://github.com/dogecoin/dogecoin
+  base58_prefix:
+    pubkey: 113
+    script: 196
+    wif: 241
+  bech32_hrp:
+  hd_path:
+    bip44: m/44'/1'/0'/0/0
+    bip49: m/49'/1'/0'/0/0
+    bip84:
+ltc:
+  src_code: https://github.com/litecoin-project/litecoin
+  base58_prefix:
+    pubkey: 48
+    script: 50
+    wif: 176
+  bech32_hrp: ltc
+  hd_path:
+    bip44: m/44'/2'/0'/0/0
+    bip49: m/49'/2'/0'/0/0
+    bip84: m/84'/2'/0'/0/0
+ltc_test:
+  src_code: https://github.com/litecoin-project/litecoin
+  base58_prefix:
+    pubkey: 111
+    script: 58
+    wif: 239
+  bech32_hrp: tltc
+  hd_path:
+    bip44: m/44'/1'/0'/0/0
+    bip49: m/49'/1'/0'/0/0
+    bip84: m/84'/1'/0'/0/0
