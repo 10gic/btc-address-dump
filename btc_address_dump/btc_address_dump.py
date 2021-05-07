@@ -76,7 +76,17 @@ def main_entry(argv):
         script_version_bytes = b'\x3a'
         wif_version_bytes = b'\xef'
         human_readable_part = "tltc"
-
+    elif chain == "wcn":
+        pubkey_version_bytes = b'\x49'
+        script_version_bytes = b'\x21'
+        wif_version_bytes = b'\x99'
+        human_readable_part = "wcn"
+    elif chain == "wcn-test":
+        pubkey_version_bytes = b'\x6f'
+        script_version_bytes = b'\x41'
+        wif_version_bytes = b'\xef'
+        human_readable_part = "tw"
+        
     if re.search("^([a-zA-Z]+\\s){11}([a-zA-Z]+).*$", inputs):
         # 12 mnemonic words
         # For example: olympic wine chicken argue unaware bundle tunnel grid spider slot spell need
