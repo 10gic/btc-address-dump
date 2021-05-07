@@ -3,6 +3,7 @@ import os
 import sys
 import re
 import argparse
+import yaml
 
 file_path = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 sys.path.insert(0, os.path.abspath(file_path))
@@ -13,6 +14,18 @@ import p2pkh_util
 import p2wpkh_util
 import p2sh_p2wpkh_util
 import common_util
+
+
+def get_base58_prefix(coins_info, chain: str, typ: str) -> bytes:
+    return coins_info[chain]["base58_prefix"][typ].to_bytes(1, byteorder='big')
+
+
+def get_bech32_hrp(coins_info, chain: str) -> str:
+    return coins_info[chain]["bech32_hrp"]
+
+
+def get_derivation_path(coins_info, chain: str, typ: str) -> str:
+    return coins_info[chain]["hd_path"][typ]
 
 
 def main_entry(argv):
@@ -31,20 +44,24 @@ def main_entry(argv):
     addr_p2sh_p2wpkh = b''
     addr_p2wpkh = ''
 
+    file = open(os.path.join(os.path.abspath(file_path), "coins.yaml"), 'r', encoding="utf-8")
+    file_data = file.read()
+    file.close()
+
+    coins_info = yaml.load(file_data, Loader=yaml.FullLoader)
+
     parser = argparse.ArgumentParser(description='A utility for dump btc address')
     parser.add_argument(
         "-c",
         "--chain",
-        help="specify btc chain, can be main (default) or test",
-        metavar='btc|btc-test|ltc|ltc-test',
+        help="specify chain, default is btc",
         default="btc",
         dest="chain",
-        choices=["btc", "btc-test", "ltc", "ltc-test"])
+        choices=coins_info.keys())
     parser.add_argument(
         "-d",
         "--derivation",
-        help="specify derivation path scheme, only applicable when input mnemonic words",
-        metavar='bip44|bip49|bip84',
+        help="specify derivation path scheme, default is bip44. Only applicable when input mnemonic words",
         default="bip44",
         dest="derivation",
         choices=["bip44", "bip49", "bip84"])
@@ -55,37 +72,20 @@ def main_entry(argv):
     inputs = args.inputs
 
     # See https://en.bitcoin.it/wiki/List_of_address_prefixes
-    pubkey_version_bytes = b'\x00'  # 0x00 for mainnet, 0x6f for testnet
-    script_version_bytes = b'\x05'  # 0x05 for mainnet, 0xc4 for testnet
-    wif_version_bytes = b'\x80'  # 0x80 for mainnet, 0xef for testnet
-    human_readable_part = "bc"  # "bc" for mainnet, and "tb" for testnet
-    if chain == "btc-test":
-        pubkey_version_bytes = b'\x6f'
-        script_version_bytes = b'\xc4'
-        wif_version_bytes = b'\xef'
-        human_readable_part = "tb"
-    elif chain == "ltc":
-        # https://github.com/litecoin-project/litecoin/blob/81c4f2d80fbd33d127ff9b31bf588e4925599d79/src/chainparams.cpp#L128
-        pubkey_version_bytes = b'\x30'
-        script_version_bytes = b'\x32'
-        wif_version_bytes = b'\xb0'
-        human_readable_part = "ltc"
-    elif chain == "ltc-test":
-        # https://github.com/litecoin-project/litecoin/blob/81c4f2d80fbd33d127ff9b31bf588e4925599d79/src/chainparams.cpp#L237
-        pubkey_version_bytes = b'\x6f'
-        script_version_bytes = b'\x3a'
-        wif_version_bytes = b'\xef'
-        human_readable_part = "tltc"
+    pubkey_version_bytes = get_base58_prefix(coins_info, chain, 'pubkey')  # 0x00 for btc mainnet, 0x6f for testnet
+    script_version_bytes = get_base58_prefix(coins_info, chain, 'script')  # 0x05 for btc mainnet, 0xc4 for testnet
+    wif_version_bytes = get_base58_prefix(coins_info, chain, 'wif')  # 0x80 for btc mainnet, 0xef for testnet
+    human_readable_part = get_bech32_hrp(coins_info, chain)  # "bc" for btc mainnet, and "tb" for testnet
 
     if re.search("^([a-zA-Z]+\\s){11}([a-zA-Z]+).*$", inputs):
         # 12 mnemonic words
         # For example: olympic wine chicken argue unaware bundle tunnel grid spider slot spell need
         # sys.stderr.write("you input mnemonic\n")
         mnemonic = inputs
-        if chain.endswith("test"):
-            derivation_path = mnemonic_util.DERIVATION_PATH["test"][derivation]
-        else:
-            derivation_path = mnemonic_util.DERIVATION_PATH[chain][derivation]
+        derivation_path = get_derivation_path(coins_info, chain, derivation)
+        if derivation_path is None or len(derivation_path) == 0:
+            sys.stderr.write("{} is not available for {}\n".format(derivation, chain))
+            sys.exit(1)
         private_key = mnemonic_util.mnemonic_to_private_key(mnemonic, derivation_path)
         private_key_wif = wif_util.encode_wif(private_key, wif_version_bytes)
         private_key_wif_compressed = wif_util.encode_wif(private_key, wif_version_bytes, compressed_wif=True)
@@ -99,7 +99,8 @@ def main_entry(argv):
             addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
         elif derivation == "bip84":
             # For bech32 address
-            addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_addr(human_readable_part, public_key_compressed)
+            if human_readable_part:
+                addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_addr(human_readable_part, public_key_compressed)
     elif (len(inputs) == 66 and inputs.startswith("0x")) or len(inputs) == 64:
         # sys.stderr.write("you input private key\n")
         # private key
@@ -116,7 +117,8 @@ def main_entry(argv):
         addr_p2pkh_uncompressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_uncompressed, pubkey_version_bytes)
         addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
         addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
-        addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_addr(human_readable_part, public_key_compressed)
+        if human_readable_part:
+            addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_addr(human_readable_part, public_key_compressed)
     elif (len(inputs) == 130 and inputs.startswith("0x")) or len(inputs) == 128 \
             or (len(inputs) == 132 and inputs.startswith("0x04")) \
             or (len(inputs) == 130 and inputs.startswith("04")):
@@ -134,7 +136,8 @@ def main_entry(argv):
         addr_p2pkh_uncompressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_uncompressed, pubkey_version_bytes)
         addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
         addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
-        addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_addr(human_readable_part, public_key_compressed)
+        if human_readable_part:
+            addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_addr(human_readable_part, public_key_compressed)
     elif (len(inputs) == 68 and inputs.startswith("0x")) or len(inputs) == 66:
         # sys.stderr.write("you input compressed public key\n")
         # compressed public key
@@ -148,13 +151,15 @@ def main_entry(argv):
         addr_p2pkh_uncompressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_uncompressed, pubkey_version_bytes)
         addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
         addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
-        addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_addr(human_readable_part, public_key_compressed)
+        if human_readable_part:
+            addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_addr(human_readable_part, public_key_compressed)
     elif (len(inputs) == 42 and inputs.startswith("0x")) or len(inputs) == 40:
         # sys.stderr.write("you input hash160 of public key\n")
         public_key_hash160 = bytes.fromhex(inputs.lower().replace('0x', ''))
         addr_p2pkh = p2pkh_util.hash160_to_p2pkh_addr(public_key_hash160, pubkey_version_bytes)
         addr_p2sh_p2wpkh = p2sh_p2wpkh_util.hash160_to_p2sh_p2wpkh_addr(public_key_hash160, script_version_bytes)
-        addr_p2wpkh = p2wpkh_util.hash160_to_segwit_addr(human_readable_part, public_key_hash160)
+        if human_readable_part:
+            addr_p2wpkh = p2wpkh_util.hash160_to_segwit_addr(human_readable_part, public_key_hash160)
     elif wif_util.is_valid_wif(inputs):
         if chain == "btc":
             assert inputs.startswith('5') or inputs.startswith('K') or inputs.startswith('L')
@@ -170,7 +175,8 @@ def main_entry(argv):
         addr_p2pkh_uncompressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_uncompressed, pubkey_version_bytes)
         addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
         addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
-        addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_addr(human_readable_part, public_key_compressed)
+        if human_readable_part:
+            addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_addr(human_readable_part, public_key_compressed)
     else:
         sys.stderr.write("invalid input: {0}\n".format(inputs))
         sys.exit(1)

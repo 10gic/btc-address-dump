@@ -21,24 +21,6 @@ BIP32_PRIVDEV = 0x80000000
 BIP32_CURVE = SECP256k1
 BIP32_SEED_MODIFIER = b'Bitcoin seed'  # https://en.bitcoin.it/wiki/BIP_0032
 
-DERIVATION_PATH = {
-    "btc": {
-        "bip44": "m/44'/0'/0'/0/0",
-        "bip49": "m/49'/0'/0'/0/0",
-        "bip84": "m/84'/0'/0'/0/0"
-    },
-    "test": {  # Testnet (all coins)
-        "bip44": "m/44'/1'/0'/0/0",
-        "bip49": "m/49'/1'/0'/0/0",
-        "bip84": "m/84'/1'/0'/0/0"
-    },
-    "ltc": {
-        "bip44": "m/44'/2'/0'/0/0",
-        "bip49": "m/49'/2'/0'/0/0",
-        "bip84": "m/84'/2'/0'/0/0"
-    }
-}
-
 
 def mnemonic_to_bip39seed(mnemonic: str, passphrase: str = "") -> bytes:
     """ BIP39 seed from a mnemonic key.
