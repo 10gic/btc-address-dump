@@ -65,3 +65,25 @@ ltc_test:
     bip44: m/44'/1'/0'/0/0
     bip49: m/49'/1'/0'/0/0
     bip84: m/84'/1'/0'/0/0
+wcn:
+  src_code: https://github.com/widecoin-project/widecoin
+  base58_prefix:
+    pubkey: 73
+    script: 33
+    wif: 153
+  bech32_hrp: wc
+  hd_path:
+    bip44: m/44'/613'/0'/0/0
+    bip49: m/49'/613'/0'/0/0
+    bip84: m/84'/613'/0'/0/0
+wcn_test:
+  src_code: https://github.com/widecoin-project/widecoin
+  base58_prefix:
+    pubkey: 111
+    script: 65
+    wif: 239
+  bech32_hrp: tw
+  hd_path:
+    bip44: m/44'/1'/0'/0/0
+    bip49: m/49'/1'/0'/0/0
+    bip84: m/84'/1'/0'/0/0
