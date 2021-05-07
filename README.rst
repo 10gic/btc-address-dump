@@ -106,7 +106,7 @@ Dump btc address from hash160 of public key::
 Bitcoin forks
 =============
 
-Bitcoin forks are supported. You can use `-c` to change chain. Here is an example of litecoin:
+Bitcoin forks are supported. You can use `-c` to change chain. Here is an example of litecoin::
 
   $ btc_address_dump -c ltc 6vazLaTvDG6Nh1CkhMTeLN5dPHjSq3cZAoET8FvDut9FUH71pp9
   private key (hex) = c0ef9854e33b0037c88c861fdf32d3df33f6a74f0cef9b696a31f5452b2aaa54
