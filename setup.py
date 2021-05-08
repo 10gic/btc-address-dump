@@ -6,17 +6,18 @@ from setuptools import setup
 requirements = [
     "ecdsa>=0.15",
     "base58>=2.0.0",
+    "pyyaml>=5.1",
 ]
 
 setup(
     name='btc-address-dump',
-    version='0.2.5',
+    version='0.2.7',
     author='cig01',
     url='https://github.com/10gic/btc-address-dump',
     license='MIT License',
     description='A utility for dump btc address from mnemonic words or private key or public key',
     long_description=open('README.rst').read(),
-    install_requires=["ecdsa", "base58"],
+    install_requires=["ecdsa", "base58", "pyyaml"],
     python_requires='>=3',
     packages=['btc_address_dump'],
     include_package_data=True,
