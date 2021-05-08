@@ -1,3 +1,4 @@
 ecdsa>=0.15
 base58>=2.0.0
 pyyaml>=5.1
+cashaddress>=1.0.6

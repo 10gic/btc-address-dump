@@ -21,6 +21,28 @@ btc_test:
     bip44: m/44'/1'/0'/0/0
     bip49: m/49'/1'/0'/0/0
     bip84: m/84'/1'/0'/0/0
+bch:
+  src_code: https://github.com/bitcoin-cash-node/bitcoin-cash-node
+  base58_prefix:
+    pubkey: 0
+    script:
+    wif: 128
+  bech32_hrp:
+  hd_path:
+    bip44: m/44'/145'/0'/0/0
+    bip49:
+    bip84:
+bch_test:
+  src_code: https://github.com/bitcoin-cash-node/bitcoin-cash-node
+  base58_prefix:
+    pubkey: 111
+    script:
+    wif: 239
+  bech32_hrp:
+  hd_path:
+    bip44: m/44'/1'/0'/0/0
+    bip49:
+    bip84:
 dog:
   src_code: https://github.com/dogecoin/dogecoin
   base58_prefix:
@@ -61,6 +83,28 @@ ltc_test:
     script: 58
     wif: 239
   bech32_hrp: tltc
+  hd_path:
+    bip44: m/44'/1'/0'/0/0
+    bip49: m/49'/1'/0'/0/0
+    bip84: m/84'/1'/0'/0/0
+grs:
+  src_code: https://github.com/Groestlcoin/groestlcoin
+  base58_prefix:
+    pubkey: 0
+    script: 5
+    wif: 128
+  bech32_hrp: bc
+  hd_path:
+    bip44: m/44'/17'/0'/0/0
+    bip49: m/49'/17'/0'/0/0
+    bip84: m/84'/17'/0'/0/0
+grs_test:
+  src_code: https://github.com/Groestlcoin/groestlcoin
+  base58_prefix:
+    pubkey: 111
+    script: 196
+    wif: 239
+  bech32_hrp: tb
   hd_path:
     bip44: m/44'/1'/0'/0/0
     bip49: m/49'/1'/0'/0/0

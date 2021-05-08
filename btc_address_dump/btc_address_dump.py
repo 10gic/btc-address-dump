@@ -4,6 +4,8 @@ import sys
 import re
 import argparse
 import yaml
+import cashaddress
+from typing import Union
 
 file_path = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 sys.path.insert(0, os.path.abspath(file_path))
@@ -16,15 +18,18 @@ import p2sh_p2wpkh_util
 import common_util
 
 
-def get_base58_prefix(coins_info, chain: str, typ: str) -> bytes:
-    return coins_info[chain]["base58_prefix"][typ].to_bytes(1, byteorder='big')
+def get_base58_prefix(coins_info, chain: str, typ: str) -> Union[bytes, None]:
+    if coins_info[chain]["base58_prefix"][typ] is None:
+        return None
+    else:
+        return coins_info[chain]["base58_prefix"][typ].to_bytes(1, byteorder='big')
 
 
-def get_bech32_hrp(coins_info, chain: str) -> str:
+def get_bech32_hrp(coins_info, chain: str) -> Union[str, None]:
     return coins_info[chain]["bech32_hrp"]
 
 
-def get_derivation_path(coins_info, chain: str, typ: str) -> str:
+def get_derivation_path(coins_info, chain: str, typ: str) -> Union[str, None]:
     return coins_info[chain]["hd_path"][typ]
 
 
@@ -96,7 +101,9 @@ def main_entry(argv):
             addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
         elif derivation == "bip49":
             # For p2sh-segwit address
-            addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
+            if script_version_bytes:
+                addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed,
+                                                                               script_version_bytes)
         elif derivation == "bip84":
             # For bech32 address
             if human_readable_part:
@@ -116,7 +123,8 @@ def main_entry(argv):
         public_key_compressed_hash160 = p2pkh_util.pubkey_to_hash160(public_key_compressed)
         addr_p2pkh_uncompressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_uncompressed, pubkey_version_bytes)
         addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
-        addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
+        if script_version_bytes:
+            addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
         if human_readable_part:
             addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_addr(human_readable_part, public_key_compressed)
     elif (len(inputs) == 130 and inputs.startswith("0x")) or len(inputs) == 128 \
@@ -135,7 +143,8 @@ def main_entry(argv):
         public_key_compressed_hash160 = p2pkh_util.pubkey_to_hash160(public_key_compressed)
         addr_p2pkh_uncompressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_uncompressed, pubkey_version_bytes)
         addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
-        addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
+        if script_version_bytes:
+            addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
         if human_readable_part:
             addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_addr(human_readable_part, public_key_compressed)
     elif (len(inputs) == 68 and inputs.startswith("0x")) or len(inputs) == 66:
@@ -150,14 +159,16 @@ def main_entry(argv):
         public_key_compressed_hash160 = p2pkh_util.pubkey_to_hash160(public_key_compressed)
         addr_p2pkh_uncompressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_uncompressed, pubkey_version_bytes)
         addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
-        addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
+        if script_version_bytes:
+            addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
         if human_readable_part:
             addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_addr(human_readable_part, public_key_compressed)
     elif (len(inputs) == 42 and inputs.startswith("0x")) or len(inputs) == 40:
         # sys.stderr.write("you input hash160 of public key\n")
         public_key_hash160 = bytes.fromhex(inputs.lower().replace('0x', ''))
         addr_p2pkh = p2pkh_util.hash160_to_p2pkh_addr(public_key_hash160, pubkey_version_bytes)
-        addr_p2sh_p2wpkh = p2sh_p2wpkh_util.hash160_to_p2sh_p2wpkh_addr(public_key_hash160, script_version_bytes)
+        if script_version_bytes:
+            addr_p2sh_p2wpkh = p2sh_p2wpkh_util.hash160_to_p2sh_p2wpkh_addr(public_key_hash160, script_version_bytes)
         if human_readable_part:
             addr_p2wpkh = p2wpkh_util.hash160_to_segwit_addr(human_readable_part, public_key_hash160)
     elif wif_util.is_valid_wif(inputs):
@@ -174,7 +185,8 @@ def main_entry(argv):
         public_key_compressed_hash160 = p2pkh_util.pubkey_to_hash160(public_key_compressed)
         addr_p2pkh_uncompressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_uncompressed, pubkey_version_bytes)
         addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
-        addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
+        if script_version_bytes:
+            addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
         if human_readable_part:
             addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_addr(human_readable_part, public_key_compressed)
     else:
@@ -201,10 +213,16 @@ def main_entry(argv):
         print("hash160 of public key = {}".format(public_key_hash160.hex()))
     if addr_p2pkh_uncompressed:
         print("legacy address (p2pkh uncompressed) = {}".format(addr_p2pkh_uncompressed.decode('ascii')))
+        if chain == "bch":
+            print("bitcoin cash address (p2pkh uncompressed) = {}".format(cashaddress.convert.to_cash_address(addr_p2pkh_uncompressed.decode('ascii'))))
     if addr_p2pkh_compressed:
         print("legacy address (p2pkh compressed) = {}".format(addr_p2pkh_compressed.decode('ascii')))
+        if chain == "bch":
+            print("bitcoin cash address (p2pkh compressed) = {}".format(cashaddress.convert.to_cash_address(addr_p2pkh_compressed.decode('ascii'))))
     if addr_p2pkh:
         print("legacy address (p2pkh) = {}".format(addr_p2pkh.decode('ascii')))
+        if chain == "bch":
+            print("bitcoin cash address (p2pkh) = {}".format(cashaddress.convert.to_cash_address(addr_p2pkh.decode('ascii'))))
     if addr_p2sh_p2wpkh:
         if public_key_hash160:
             print("p2sh-segwit address (only valid if input is hash160 of COMPRESSED public key) = {}".format(

@@ -7,6 +7,7 @@ requirements = [
     "ecdsa>=0.15",
     "base58>=2.0.0",
     "pyyaml>=5.1",
+    "cashaddress>=1.0.6",
 ]
 
 setup(
@@ -17,7 +18,7 @@ setup(
     license='MIT License',
     description='A utility for dump btc address from mnemonic words or private key or public key',
     long_description=open('README.rst').read(),
-    install_requires=["ecdsa>=0.15", "base58>=2.0.0", "pyyaml>=5.1"],
+    install_requires=["ecdsa>=0.15", "base58>=2.0.0", "pyyaml>=5.1", "cashaddress>=1.0.6"],
     python_requires='>=3',
     packages=['btc_address_dump'],
     include_package_data=True,
