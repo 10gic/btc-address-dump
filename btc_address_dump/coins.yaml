@@ -43,6 +43,94 @@ bch_test:
     bip44: m/44'/1'/0'/0/0
     bip49:
     bip84:
+bsv:
+  src_code: https://github.com/bitcoin-sv/bitcoin-sv
+  base58_prefix:
+    pubkey: 0
+    script:
+    wif: 128
+  bech32_hrp:
+  hd_path:
+    bip44: m/44'/236'/0'/0/0
+    bip49:
+    bip84:
+bsv_test:
+  src_code: https://github.com/bitcoin-sv/bitcoin-sv
+  base58_prefix:
+    pubkey: 111
+    script:
+    wif: 239
+  bech32_hrp:
+  hd_path:
+    bip44: m/44'/1'/0'/0/0
+    bip49:
+    bip84:
+btg:
+  src_code: https://github.com/BTCGPU/BTCGPU
+  base58_prefix:
+    pubkey: 38
+    script: 23
+    wif: 128
+  bech32_hrp: btg
+  hd_path:
+    bip44: m/44'/156'/0'/0/0
+    bip49: m/49'/156'/0'/0/0
+    bip84: m/84'/156'/0'/0/0
+btg_test:
+  src_code: https://github.com/BTCGPU/BTCGPU
+  base58_prefix:
+    pubkey: 111
+    script: 196
+    wif: 239
+  bech32_hrp: tbtg
+  hd_path:
+    bip44: m/44'/1'/0'/0/0
+    bip49: m/49'/1'/0'/0/0
+    bip84: m/84'/1'/0'/0/0
+bcd:
+  src_code: https://github.com/eveybcd/BitcoinDiamond
+  base58_prefix:
+    pubkey: 0
+    script: 5
+    wif: 128
+  bech32_hrp: bcd
+  hd_path:
+    bip44: m/44'/999'/0'/0/0
+    bip49: m/49'/999'/0'/0/0
+    bip84: m/84'/999'/0'/0/0
+bcd_test:
+  src_code: https://github.com/eveybcd/BitcoinDiamond
+  base58_prefix:
+    pubkey: 111
+    script: 196
+    wif: 239
+  bech32_hrp: tbcd
+  hd_path:
+    bip44: m/44'/1'/0'/0/0
+    bip49: m/49'/1'/0'/0/0
+    bip84: m/84'/1'/0'/0/0
+dash:
+  src_code: https://github.com/dashpay/dash
+  base58_prefix:
+    pubkey: 76
+    script:
+    wif: 204
+  bech32_hrp:
+  hd_path:
+    bip44: m/44'/5'/0'/0/0
+    bip49:
+    bip84:
+dash_test:
+  src_code: https://github.com/dashpay/dash
+  base58_prefix:
+    pubkey: 140
+    script:
+    wif: 239
+  bech32_hrp:
+  hd_path:
+    bip44: m/44'/1'/0'/0/0
+    bip49:
+    bip84:
 dog:
   src_code: https://github.com/dogecoin/dogecoin
   base58_prefix:
