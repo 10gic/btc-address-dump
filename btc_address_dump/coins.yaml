@@ -12,6 +12,7 @@ btc:
     bip44: m/44'/0'/0'/0/0
     bip49: m/49'/0'/0'/0/0
     bip84: m/84'/0'/0'/0/0
+    bip86: m/86'/0'/0'/0/0
 btc_test:
   name: Bitcoin
   home: https://bitcoin.org
@@ -25,6 +26,7 @@ btc_test:
     bip44: m/44'/1'/0'/0/0
     bip49: m/49'/1'/0'/0/0
     bip84: m/84'/1'/0'/0/0
+    bip86: m/86'/1'/0'/0/0
 bch:
   name: Bitcoin Cash
   home: https://bitcoincash.org

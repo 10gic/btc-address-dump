@@ -1,6 +1,7 @@
 import os
 import sys
 from typing import Optional, Union, List, Tuple
+from enum import Enum
 
 file_path = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 sys.path.insert(0, os.path.abspath(file_path))
@@ -9,7 +10,16 @@ import common_util
 
 # From https://github.com/sipa/bech32/blob/master/ref/python/segwit_addr.py
 """Reference implementation for Bech32 and segwit addresses."""
+
+
+class Encoding(Enum):
+    """Enumeration type to list the various supported encodings."""
+    BECH32 = 1
+    BECH32M = 2
+
+
 CHARSET = "qpzry9x8gf2tvdw0s3jn54khce6mua7l"
+BECH32M_CONST = 0x2bc830a3
 
 
 def bech32_polymod(values: List[int]) -> int:
@@ -29,40 +39,47 @@ def bech32_hrp_expand(hrp: str) -> List[int]:
     return [ord(x) >> 5 for x in hrp] + [0] + [ord(x) & 31 for x in hrp]
 
 
-def bech32_verify_checksum(hrp: str, data: List[int]) -> bool:
+def bech32_verify_checksum(hrp: str, data: List[int]) -> Union[Encoding, None]:
     """Verify a checksum given HRP and converted data characters."""
-    return bech32_polymod(bech32_hrp_expand(hrp) + data) == 1
+    const = bech32_polymod(bech32_hrp_expand(hrp) + data)
+    if const == 1:
+        return Encoding.BECH32
+    if const == BECH32M_CONST:
+        return Encoding.BECH32M
+    return None
 
 
-def bech32_create_checksum(hrp: str, data: List[int]) -> List[int]:
+def bech32_create_checksum(hrp: str, data: List[int], spec: Encoding) -> List[int]:
     """Compute the checksum values given HRP and data."""
     values = bech32_hrp_expand(hrp) + data
-    polymod = bech32_polymod(values + [0, 0, 0, 0, 0, 0]) ^ 1
+    const = BECH32M_CONST if spec == Encoding.BECH32M else 1
+    polymod = bech32_polymod(values + [0, 0, 0, 0, 0, 0]) ^ const
     return [(polymod >> 5 * (5 - i)) & 31 for i in range(6)]
 
 
-def bech32_encode(hrp: str, data: List[int]) -> str:
+def bech32_encode(hrp: str, data: List[int], spec: Encoding) -> str:
     """Compute a Bech32 string given HRP and data values."""
-    combined = data + bech32_create_checksum(hrp, data)
+    combined = data + bech32_create_checksum(hrp, data, spec)
     return hrp + '1' + ''.join([CHARSET[d] for d in combined])
 
 
-def bech32_decode(bech: str) -> Union[Tuple[None, None], Tuple[str, List[int]]]:
-    """Validate a Bech32 string, and determine HRP and data."""
+def bech32_decode(bech: str) -> Union[Tuple[None, None, None], Tuple[str, List[int], Encoding]]:
+    """Validate a Bech32/Bech32m string, and determine HRP and data."""
     if ((any(ord(x) < 33 or ord(x) > 126 for x in bech)) or
             (bech.lower() != bech and bech.upper() != bech)):
-        return None, None
+        return None, None, None
     bech = bech.lower()
     pos = bech.rfind('1')
     if pos < 1 or pos + 7 > len(bech) or len(bech) > 90:
-        return None, None
-    if not all(x in CHARSET for x in bech[pos + 1:]):
-        return None, None
+        return None, None, None
+    if not all(x in CHARSET for x in bech[pos+1:]):
+        return None, None, None
     hrp = bech[:pos]
-    data = [CHARSET.find(x) for x in bech[pos + 1:]]
-    if not bech32_verify_checksum(hrp, data):
-        return None, None
-    return hrp, data[:-6]
+    data = [CHARSET.find(x) for x in bech[pos+1:]]
+    spec = bech32_verify_checksum(hrp, data)
+    if spec is None:
+        return None, None, None
+    return hrp, data[:-6], spec
 
 
 def convertbits(data: bytes, frombits: int, tobits: int, pad: bool = True) -> Optional[List[int]]:
@@ -90,28 +107,36 @@ def convertbits(data: bytes, frombits: int, tobits: int, pad: bool = True) -> Op
 
 def decode(hrp: str, addr: str) -> Union[Tuple[None, None], Tuple[int, List[int]]]:
     """Decode a segwit address."""
-    hrpgot, data = bech32_decode(addr)
+    hrpgot, data, spec = bech32_decode(addr)
     if hrpgot != hrp:
         return None, None
     decoded = convertbits(data[1:], 5, 8, False)
+    # Witness programs are between 2 and 40 bytes in length.
     if decoded is None or len(decoded) < 2 or len(decoded) > 40:
         return None, None
+    # Witness versions are in range 0..16.
     if data[0] > 16:
         return None, None
+    # Witness v0 programs must be exactly length 20 or 32.
     if data[0] == 0 and len(decoded) != 20 and len(decoded) != 32:
         return None, None
+    # Witness v0 uses Bech32; v1 through v16 use Bech32m.
+    if data[0] == 0 and spec != Encoding.BECH32 or data[0] != 0 and spec != Encoding.BECH32M:
+        return None, None
+    # Success.
     return data[0], decoded
 
 
 def encode(hrp: str, witver: int, witprog: bytes) -> Optional[str]:
     """Encode a segwit address."""
-    ret = bech32_encode(hrp, [witver] + convertbits(witprog, 8, 5))
+    spec = Encoding.BECH32 if witver == 0 else Encoding.BECH32M
+    ret = bech32_encode(hrp, [witver] + convertbits(witprog, 8, 5), spec)
     if decode(hrp, ret) == (None, None):
         return None
     return ret
 
 
-def hash160_to_segwit_addr(human_readable_part: str, hash160: bytes) -> Optional[str]:
+def hash160_to_segwit_v0_addr(human_readable_part: str, hash160: bytes) -> Optional[str]:
     """ Derives bech32 (p2wpkh) address from hash160 of pubkey, eg. ripemd160(sha256(pubkey)) """
     witver = 0
     witprog = hash160
@@ -119,9 +144,16 @@ def hash160_to_segwit_addr(human_readable_part: str, hash160: bytes) -> Optional
     return addr
 
 
-def pubkey_to_segwit_addr(human_readable_part: str, pubkey: bytes) -> Optional[str]:
+def pubkey_to_segwit_v0_addr(human_readable_part: str, pubkey: bytes) -> Optional[str]:
     """ Derives bech32 (p2wpkh) address from pubkey """
     witver = 0
     witprog = common_util.ripemd160(common_util.sha256(pubkey))
+    addr = encode(human_readable_part, witver, witprog)
+    return addr
+
+
+def pubkey_to_segwit_v1_addr(human_readable_part: str, witprog: bytes) -> Optional[str]:
+    """ Derives bech32m (p2tr) address from pubkey """
+    witver = 1
     addr = encode(human_readable_part, witver, witprog)
     return addr

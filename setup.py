@@ -12,7 +12,7 @@ requirements = [
 
 setup(
     name='btc-address-dump',
-    version='0.2.9',
+    version='0.3.0',
     author='cig01',
     url='https://github.com/10gic/btc-address-dump',
     license='MIT License',

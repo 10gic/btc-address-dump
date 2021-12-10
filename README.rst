@@ -41,6 +41,18 @@ Dump btc address from mnemonic words (bip84, P2WPKH)::
   hash160 of compressed public key = 2ca1cb8b4981d03249d741e3dedd0e5f2da65027
   bech32 address (p2wpkh) = bc1q9jsuhz6fs8gryjwhg83aahgwtuk6v5p8h54899
 
+Dump btc address from mnemonic words (bip86, P2TR)::
+
+  $ btc_address_dump -d bip86 "olympic wine chicken argue unaware bundle tunnel grid spider slot spell need"
+  mnemonic = olympic wine chicken argue unaware bundle tunnel grid spider slot spell need
+  private key (hex) = 666c57341ca198f7f9e821af23c4688d233deda501922ed9f4c54084bff47693
+  private key (WIF) = 5JbPqxGCGR75Movygz29XuNYukSKbqnzz97FKwkfChgZjs2odq6
+  private key (WIF compressed) = Kzeoq4v4j3PpEr9FDUg4fQA7qpim6nN2wCnaEcfhceZdVrgPziFd
+  public key (compressed) = 02cb24ba2caf40b51fd72b395fe96794e6cdeec8fb5811ff1e6625af5fa3e0d587
+  hash160 of compressed public key = 0e1f80bffb15cf157420c004c3fe173edc035b5a
+  taproot output key = fe2cff97d4abadb1590c7c4321afd25e0ed2a741c87772b7bb335fa4100c4d48
+  bech32m address (p2tr) = bc1plck0l9754wkmzkgv03pjrt7jtc8d9f6pepmh9damxd06gyqvf4yqe3wewn
+
 Dump btc address from hex private key::
 
   $ btc_address_dump c7ac679b56f50bfd54dd924fe45a8dca7a1c2dced254b03dac22afc03adb9127
@@ -51,10 +63,12 @@ Dump btc address from hex private key::
   public key (compressed) = 024cd0aaeca3b636078583408e75edd77307b5190ca7a48bb9fbc1f2576c17dff1
   hash160 of uncompressed public key = fd214a3d033c82b307532018ac15ff6e06e62111
   hash160 of compressed public key = 1075f16844287d6d1c6fefbe2486cd3325127424
+  taproot output key = 1aea318388d939fff861ee264c7446d839580b07212c4c2ac2fb9cdd656237c3
   legacy address (p2pkh uncompressed) = 1Q5RqZctfcNkTPad2tuJSREByd2gB8xs63
   legacy address (p2pkh compressed) = 12W36tm2jnreFiYdrzfE6cvRaKRbicEpnA
   p2sh-segwit address (p2sh p2wpkh) = 3AzXxVUqdzvzEqVmdtmeVqRwc98uqwyh76
   bech32 address (p2wpkh) = bc1qzp6lz6zy9p7k68r0a7lzfpkdxvj3yapynzuatt
+  bech32m address (p2tr) = bc1prt4rrqugmyull7rpacnycazxmqu4szc8yykyc2kzlwwd6etzxlpskwl7qz
 
 Dump btc address from WIF private key::
 
@@ -66,10 +80,12 @@ Dump btc address from WIF private key::
   public key (compressed) = 024cd0aaeca3b636078583408e75edd77307b5190ca7a48bb9fbc1f2576c17dff1
   hash160 of uncompressed public key = fd214a3d033c82b307532018ac15ff6e06e62111
   hash160 of compressed public key = 1075f16844287d6d1c6fefbe2486cd3325127424
+  taproot output key = 1aea318388d939fff861ee264c7446d839580b07212c4c2ac2fb9cdd656237c3
   legacy address (p2pkh uncompressed) = 1Q5RqZctfcNkTPad2tuJSREByd2gB8xs63
   legacy address (p2pkh compressed) = 12W36tm2jnreFiYdrzfE6cvRaKRbicEpnA
   p2sh-segwit address (p2sh p2wpkh) = 3AzXxVUqdzvzEqVmdtmeVqRwc98uqwyh76
   bech32 address (p2wpkh) = bc1qzp6lz6zy9p7k68r0a7lzfpkdxvj3yapynzuatt
+  bech32m address (p2tr) = bc1prt4rrqugmyull7rpacnycazxmqu4szc8yykyc2kzlwwd6etzxlpskwl7qz
 
 Dump btc address from public key::
 
@@ -78,10 +94,12 @@ Dump btc address from public key::
   public key (compressed) = 024cd0aaeca3b636078583408e75edd77307b5190ca7a48bb9fbc1f2576c17dff1
   hash160 of uncompressed public key = fd214a3d033c82b307532018ac15ff6e06e62111
   hash160 of compressed public key = 1075f16844287d6d1c6fefbe2486cd3325127424
+  taproot output key = 1aea318388d939fff861ee264c7446d839580b07212c4c2ac2fb9cdd656237c3
   legacy address (p2pkh uncompressed) = 1Q5RqZctfcNkTPad2tuJSREByd2gB8xs63
   legacy address (p2pkh compressed) = 12W36tm2jnreFiYdrzfE6cvRaKRbicEpnA
   p2sh-segwit address (p2sh p2wpkh) = 3AzXxVUqdzvzEqVmdtmeVqRwc98uqwyh76
   bech32 address (p2wpkh) = bc1qzp6lz6zy9p7k68r0a7lzfpkdxvj3yapynzuatt
+  bech32m address (p2tr) = bc1prt4rrqugmyull7rpacnycazxmqu4szc8yykyc2kzlwwd6etzxlpskwl7qz
 
 Dump btc address from compressed public key::
 
@@ -90,10 +108,12 @@ Dump btc address from compressed public key::
   public key (compressed) = 024cd0aaeca3b636078583408e75edd77307b5190ca7a48bb9fbc1f2576c17dff1
   hash160 of uncompressed public key = fd214a3d033c82b307532018ac15ff6e06e62111
   hash160 of compressed public key = 1075f16844287d6d1c6fefbe2486cd3325127424
+  taproot output key = 1aea318388d939fff861ee264c7446d839580b07212c4c2ac2fb9cdd656237c3
   legacy address (p2pkh uncompressed) = 1Q5RqZctfcNkTPad2tuJSREByd2gB8xs63
   legacy address (p2pkh compressed) = 12W36tm2jnreFiYdrzfE6cvRaKRbicEpnA
   p2sh-segwit address (p2sh p2wpkh) = 3AzXxVUqdzvzEqVmdtmeVqRwc98uqwyh76
   bech32 address (p2wpkh) = bc1qzp6lz6zy9p7k68r0a7lzfpkdxvj3yapynzuatt
+  bech32m address (p2tr) = bc1prt4rrqugmyull7rpacnycazxmqu4szc8yykyc2kzlwwd6etzxlpskwl7qz
 
 Dump btc address from hash160 of public key::
 
@@ -116,10 +136,12 @@ Bitcoin forks are supported. You can use `-c` to change chain. Here is an exampl
   public key (compressed) = 023a0b64eee7e82b80e3e5a02cc9df3f08e1c534bd8b64846f5d556d38af6d9eb2
   hash160 of uncompressed public key = ffd04e9fca28b32ef5656e4e224d06256fca20ea
   hash160 of compressed public key = 3c49068b96181b8d40a4272f69faadc5f722e8b9
+  taproot output key = 456e7dae52bae03cad9ddc8de61c3248236f8ae2786081c1eadcd1614eae7f69
   legacy address (p2pkh uncompressed) = LiYa7ZaqerPbbtad6oxds4wCqYF9v1XH83
   legacy address (p2pkh compressed) = LQiiHdPZmAsHNwSngex6fQgPUDDd1Ky47j
   p2sh-segwit address (p2sh p2wpkh) = MNNZtmjz5HehvjvLxM89c5oXRp1g9hRT9E
   bech32 address (p2wpkh) = ltc1q83ysdzukrqdc6s9yyuhkn74dchmj969e8tjw92
+  bech32m address (p2tr) = ltc1pg4h8mtjjhtsretvamjx7v8pjfq3klzhz0psgrs02mngkzn4w0a5srs49v4
 
 If your favorite coin is not supported, just add it to coins.yaml, and create a pull request.
 
