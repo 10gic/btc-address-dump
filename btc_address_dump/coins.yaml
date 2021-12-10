@@ -1,5 +1,7 @@
 # Registered coin types: https://github.com/satoshilabs/slips/blob/master/slip-0044.md
 btc:
+  name: Bitcoin
+  home: https://bitcoin.org
   src_code: https://github.com/bitcoin/bitcoin
   base58_prefix:
     pubkey: 0
@@ -11,6 +13,8 @@ btc:
     bip49: m/49'/0'/0'/0/0
     bip84: m/84'/0'/0'/0/0
 btc_test:
+  name: Bitcoin
+  home: https://bitcoin.org
   src_code: https://github.com/bitcoin/bitcoin
   base58_prefix:
     pubkey: 111
@@ -22,6 +26,8 @@ btc_test:
     bip49: m/49'/1'/0'/0/0
     bip84: m/84'/1'/0'/0/0
 bch:
+  name: Bitcoin Cash
+  home: https://bitcoincash.org
   src_code: https://github.com/bitcoin-cash-node/bitcoin-cash-node
   base58_prefix:
     pubkey: 0
@@ -33,6 +39,8 @@ bch:
     bip49:
     bip84:
 bch_test:
+  name: Bitcoin Cash
+  home: https://bitcoincash.org
   src_code: https://github.com/bitcoin-cash-node/bitcoin-cash-node
   base58_prefix:
     pubkey: 111
@@ -44,6 +52,8 @@ bch_test:
     bip49:
     bip84:
 bsv:
+  name: Bitcoin SV
+  home: https://bitcoinsv.io
   src_code: https://github.com/bitcoin-sv/bitcoin-sv
   base58_prefix:
     pubkey: 0
@@ -55,6 +65,8 @@ bsv:
     bip49:
     bip84:
 bsv_test:
+  name: Bitcoin SV
+  home: https://bitcoinsv.io
   src_code: https://github.com/bitcoin-sv/bitcoin-sv
   base58_prefix:
     pubkey: 111
@@ -66,6 +78,8 @@ bsv_test:
     bip49:
     bip84:
 btg:
+  name: Bitcoin Gold
+  home: https://bitcoingold.org
   src_code: https://github.com/BTCGPU/BTCGPU
   base58_prefix:
     pubkey: 38
@@ -77,6 +91,8 @@ btg:
     bip49: m/49'/156'/0'/0/0
     bip84: m/84'/156'/0'/0/0
 btg_test:
+  name: Bitcoin Gold
+  home: https://bitcoingold.org
   src_code: https://github.com/BTCGPU/BTCGPU
   base58_prefix:
     pubkey: 111
@@ -88,6 +104,8 @@ btg_test:
     bip49: m/49'/1'/0'/0/0
     bip84: m/84'/1'/0'/0/0
 bcd:
+  name: Bitcoin Diamond
+  home: https://www.bitcoindiamond.org
   src_code: https://github.com/eveybcd/BitcoinDiamond
   base58_prefix:
     pubkey: 0
@@ -99,6 +117,8 @@ bcd:
     bip49: m/49'/999'/0'/0/0
     bip84: m/84'/999'/0'/0/0
 bcd_test:
+  name: Bitcoin Diamond
+  home: https://www.bitcoindiamond.org
   src_code: https://github.com/eveybcd/BitcoinDiamond
   base58_prefix:
     pubkey: 111
@@ -110,6 +130,8 @@ bcd_test:
     bip49: m/49'/1'/0'/0/0
     bip84: m/84'/1'/0'/0/0
 dash:
+  name: Dash
+  home: https://dash.org
   src_code: https://github.com/dashpay/dash
   base58_prefix:
     pubkey: 76
@@ -121,6 +143,8 @@ dash:
     bip49:
     bip84:
 dash_test:
+  name: Dash
+  home: https://dash.org
   src_code: https://github.com/dashpay/dash
   base58_prefix:
     pubkey: 140
@@ -132,6 +156,8 @@ dash_test:
     bip49:
     bip84:
 dog:
+  name: Dogecoin
+  home: https://dogecoin.com
   src_code: https://github.com/dogecoin/dogecoin
   base58_prefix:
     pubkey: 30
@@ -143,6 +169,8 @@ dog:
     bip49: m/49'/3'/0'/0/0
     bip84:
 dog_test:
+  name: Dogecoin
+  home: https://dogecoin.com
   src_code: https://github.com/dogecoin/dogecoin
   base58_prefix:
     pubkey: 113
@@ -154,6 +182,8 @@ dog_test:
     bip49: m/49'/1'/0'/0/0
     bip84:
 ltc:
+  name: Litecoin
+  home: https://litecoin.org
   src_code: https://github.com/litecoin-project/litecoin
   base58_prefix:
     pubkey: 48
@@ -165,6 +195,8 @@ ltc:
     bip49: m/49'/2'/0'/0/0
     bip84: m/84'/2'/0'/0/0
 ltc_test:
+  name: Litecoin
+  home: https://litecoin.org
   src_code: https://github.com/litecoin-project/litecoin
   base58_prefix:
     pubkey: 111
@@ -176,6 +208,8 @@ ltc_test:
     bip49: m/49'/1'/0'/0/0
     bip84: m/84'/1'/0'/0/0
 grs:
+  name: Groestlcoin
+  home: https://www.groestlcoin.org
   src_code: https://github.com/Groestlcoin/groestlcoin
   base58_prefix:
     pubkey: 0
@@ -187,6 +221,8 @@ grs:
     bip49: m/49'/17'/0'/0/0
     bip84: m/84'/17'/0'/0/0
 grs_test:
+  name: Groestlcoin
+  home: https://www.groestlcoin.org
   src_code: https://github.com/Groestlcoin/groestlcoin
   base58_prefix:
     pubkey: 111
@@ -197,7 +233,87 @@ grs_test:
     bip44: m/44'/1'/0'/0/0
     bip49: m/49'/1'/0'/0/0
     bip84: m/84'/1'/0'/0/0
+dgb:
+  name: DigiByte
+  home: https://digibyte.io
+  src_code: https://github.com/digibyte/digibyte
+  base58_prefix:
+    pubkey: 30
+    script: 63
+    wif: 128
+  bech32_hrp: dgb
+  hd_path:
+    bip44: m/44'/20'/0'/0/0
+    bip49: m/49'/20'/0'/0/0
+    bip84: m/84'/20'/0'/0/0
+dgb_test:
+  name: DigiByte
+  home: https://digibyte.io
+  src_code: https://github.com/digibyte/digibyte
+  base58_prefix:
+    pubkey: 126
+    script: 140
+    wif: 254
+  bech32_hrp: dgbt
+  hd_path:
+    bip44: m/44'/1'/0'/0/0
+    bip49: m/49'/1'/0'/0/0
+    bip84: m/84'/1'/0'/0/0
+via:
+  name: Viacoin
+  home: https://viacoin.org
+  src_code: https://github.com/viacoin/viacore-viacoin
+  base58_prefix:
+    pubkey: 71
+    script: 33
+    wif: 199
+  bech32_hrp:
+  hd_path:
+    bip44: m/44'/14'/0'/0/0
+    bip49: m/49'/14'/0'/0/0
+    bip84:
+via_test:
+  name: Viacoin
+  home: https://viacoin.org
+  src_code: https://github.com/viacoin/viacore-viacoin
+  base58_prefix:
+    pubkey: 127
+    script: 196
+    wif: 255
+  bech32_hrp:
+  hd_path:
+    bip44: m/44'/1'/0'/0/0
+    bip49: m/49'/1'/0'/0/0
+    bip84:
+mona:
+  name: Monacoin
+  home: https://monacoin.org
+  src_code: https://github.com/monacoinproject/monacoin
+  base58_prefix:
+    pubkey: 50
+    script: 55
+    wif: 176
+  bech32_hrp: mona
+  hd_path:
+    bip44: m/44'/22'/0'/0/0
+    bip49: m/49'/22'/0'/0/0
+    bip84: m/84'/22'/0'/0/0
+mona_test:
+  name: Monacoin
+  home: https://monacoin.org
+  src_code: https://github.com/monacoinproject/monacoin
+  base58_prefix:
+    pubkey: 111
+    script: 117
+    wif: 239
+  bech32_hrp:
+  hd_path:
+    bip44: m/44'/1'/0'/0/0
+    bip49: m/49'/1'/0'/0/0
+    bip84: m/84'/1'/0'/0/0
 wcn:
+  name: Widecoin
+  home: https://widecoin.org
   src_code: https://github.com/widecoin-project/widecoin
   base58_prefix:
     pubkey: 73
@@ -209,6 +325,8 @@ wcn:
     bip49: m/49'/613'/0'/0/0
     bip84: m/84'/613'/0'/0/0
 wcn_test:
+  name: Widecoin
+  home: https://widecoin.org
   src_code: https://github.com/widecoin-project/widecoin
   base58_prefix:
     pubkey: 111
