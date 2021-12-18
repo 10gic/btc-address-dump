@@ -13,7 +13,7 @@ btc:
     bip49: m/49'/0'/0'/0/0
     bip84: m/84'/0'/0'/0/0
     bip86: m/86'/0'/0'/0/0
-btc_test:
+btc_testnet:
   name: Bitcoin
   home: https://bitcoin.org
   src_code: https://github.com/bitcoin/bitcoin
@@ -40,7 +40,7 @@ bch:
     bip44: m/44'/145'/0'/0/0
     bip49:
     bip84:
-bch_test:
+bch_testnet:
   name: Bitcoin Cash
   home: https://bitcoincash.org
   src_code: https://github.com/bitcoin-cash-node/bitcoin-cash-node
@@ -66,7 +66,7 @@ bsv:
     bip44: m/44'/236'/0'/0/0
     bip49:
     bip84:
-bsv_test:
+bsv_testnet:
   name: Bitcoin SV
   home: https://bitcoinsv.io
   src_code: https://github.com/bitcoin-sv/bitcoin-sv
@@ -92,7 +92,7 @@ btg:
     bip44: m/44'/156'/0'/0/0
     bip49: m/49'/156'/0'/0/0
     bip84: m/84'/156'/0'/0/0
-btg_test:
+btg_testnet:
   name: Bitcoin Gold
   home: https://bitcoingold.org
   src_code: https://github.com/BTCGPU/BTCGPU
@@ -118,7 +118,7 @@ bcd:
     bip44: m/44'/999'/0'/0/0
     bip49: m/49'/999'/0'/0/0
     bip84: m/84'/999'/0'/0/0
-bcd_test:
+bcd_testnet:
   name: Bitcoin Diamond
   home: https://www.bitcoindiamond.org
   src_code: https://github.com/eveybcd/BitcoinDiamond
@@ -144,7 +144,7 @@ dash:
     bip44: m/44'/5'/0'/0/0
     bip49:
     bip84:
-dash_test:
+dash_testnet:
   name: Dash
   home: https://dash.org
   src_code: https://github.com/dashpay/dash
@@ -170,7 +170,7 @@ dog:
     bip44: m/44'/3'/0'/0/0
     bip49: m/49'/3'/0'/0/0
     bip84:
-dog_test:
+dog_testnet:
   name: Dogecoin
   home: https://dogecoin.com
   src_code: https://github.com/dogecoin/dogecoin
@@ -196,7 +196,7 @@ ltc:
     bip44: m/44'/2'/0'/0/0
     bip49: m/49'/2'/0'/0/0
     bip84: m/84'/2'/0'/0/0
-ltc_test:
+ltc_testnet:
   name: Litecoin
   home: https://litecoin.org
   src_code: https://github.com/litecoin-project/litecoin
@@ -222,7 +222,7 @@ grs:
     bip44: m/44'/17'/0'/0/0
     bip49: m/49'/17'/0'/0/0
     bip84: m/84'/17'/0'/0/0
-grs_test:
+grs_testnet:
   name: Groestlcoin
   home: https://www.groestlcoin.org
   src_code: https://github.com/Groestlcoin/groestlcoin
@@ -248,7 +248,7 @@ dgb:
     bip44: m/44'/20'/0'/0/0
     bip49: m/49'/20'/0'/0/0
     bip84: m/84'/20'/0'/0/0
-dgb_test:
+dgb_testnet:
   name: DigiByte
   home: https://digibyte.io
   src_code: https://github.com/digibyte/digibyte
@@ -274,7 +274,7 @@ via:
     bip44: m/44'/14'/0'/0/0
     bip49: m/49'/14'/0'/0/0
     bip84:
-via_test:
+via_testnet:
   name: Viacoin
   home: https://viacoin.org
   src_code: https://github.com/viacoin/viacore-viacoin
@@ -300,7 +300,7 @@ mona:
     bip44: m/44'/22'/0'/0/0
     bip49: m/49'/22'/0'/0/0
     bip84: m/84'/22'/0'/0/0
-mona_test:
+mona_testnet:
   name: Monacoin
   home: https://monacoin.org
   src_code: https://github.com/monacoinproject/monacoin
@@ -326,7 +326,7 @@ wcn:
     bip44: m/44'/613'/0'/0/0
     bip49: m/49'/613'/0'/0/0
     bip84: m/84'/613'/0'/0/0
-wcn_test:
+wcn_testnet:
   name: Widecoin
   home: https://widecoin.org
   src_code: https://github.com/widecoin-project/widecoin
