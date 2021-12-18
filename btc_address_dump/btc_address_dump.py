@@ -31,7 +31,11 @@ def get_bech32_hrp(coins_info, chain: str) -> Union[str, None]:
 
 
 def get_derivation_path(coins_info, chain: str, typ: str) -> Union[str, None]:
-    return coins_info[chain]["hd_path"][typ]
+    try:
+        derivation_path = coins_info[chain]["hd_path"][typ]
+    except KeyError:
+        derivation_path = None
+    return derivation_path
 
 
 def main_entry(argv):
@@ -70,10 +74,10 @@ def main_entry(argv):
     parser.add_argument(
         "-d",
         "--derivation",
-        help="specify derivation path scheme, default is bip44. Only applicable when input mnemonic words",
+        help="specify derivation path scheme (bip44/bip49/bip84/bip86) or customized path (e.g. m/0'/0/0), default is "
+             "bip44. Only applicable when input mnemonic words",
         default="bip44",
-        dest="derivation",
-        choices=["bip44", "bip49", "bip84", "bip86"])
+        dest="derivation")
     parser.add_argument("inputs", metavar="mnemonic-words|private-key|public-key")
     args = parser.parse_args(argv[1:])
     chain = args.chain
@@ -91,9 +95,9 @@ def main_entry(argv):
         # For example: olympic wine chicken argue unaware bundle tunnel grid spider slot spell need
         # sys.stderr.write("you input mnemonic\n")
         mnemonic = inputs
-        derivation_path = get_derivation_path(coins_info, chain, derivation)
+        derivation_path = derivation if derivation.startswith("m/") else get_derivation_path(coins_info, chain, derivation)
         if derivation_path is None or len(derivation_path) == 0:
-            sys.stderr.write("{} is not available for {}\n".format(derivation, chain))
+            sys.stderr.write("derivation path {} is not available for {}\n".format(derivation, chain))
             sys.exit(1)
         private_key = mnemonic_util.mnemonic_to_private_key(mnemonic, derivation_path)
         private_key_wif = wif_util.encode_wif(private_key, wif_version_bytes)
@@ -113,6 +117,21 @@ def main_entry(argv):
             if human_readable_part:
                 addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_v0_addr(human_readable_part, public_key_compressed)
         elif derivation == "bip86":
+            # For bech32m address
+            if human_readable_part:
+                public_key_x_coordinate = public_key_compressed[1:33]
+                taproot_output_key = p2tr_util.public_key_x_coordinate_to_taproot_output_key(public_key_x_coordinate)
+                addr_p2tr = p2wpkh_util.pubkey_to_segwit_v1_addr(human_readable_part, taproot_output_key)
+        elif derivation.startswith("m/"):  # customized path
+            # For legacy address
+            addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
+            # For p2sh-segwit address
+            if script_version_bytes:
+                addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed,
+                                                                               script_version_bytes)
+            # For bech32 address
+            if human_readable_part:
+                addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_v0_addr(human_readable_part, public_key_compressed)
             # For bech32m address
             if human_readable_part:
                 public_key_x_coordinate = public_key_compressed[1:33]
