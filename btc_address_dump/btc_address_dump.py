@@ -48,8 +48,8 @@ def main_entry(argv):
     public_key_uncompressed_hash160 = b''
     public_key_compressed_hash160 = b''
     public_key_hash160 = b''
-    taproot_internal_key = b''
-    taproot_output_key = b''
+    taproot_tweaked_private_key = b''
+    taproot_tweaked_public_key = b''
     addr_p2pkh_uncompressed = b''
     addr_p2pkh_compressed = b''
     addr_p2pkh = b''  # uncompressed or compressed
@@ -119,9 +119,10 @@ def main_entry(argv):
         elif derivation == "bip86":
             # For bech32m address
             if human_readable_part:
+                taproot_tweaked_private_key = p2tr_util.taproot_tweak_seckey(private_key)
                 public_key_x_coordinate = public_key_compressed[1:33]
-                taproot_output_key = p2tr_util.public_key_x_coordinate_to_taproot_output_key(public_key_x_coordinate)
-                addr_p2tr = p2wpkh_util.pubkey_to_segwit_v1_addr(human_readable_part, taproot_output_key)
+                taproot_tweaked_public_key = p2tr_util.public_key_x_coordinate_to_taproot_tweaked_pubkey(public_key_x_coordinate)
+                addr_p2tr = p2wpkh_util.pubkey_to_segwit_v1_addr(human_readable_part, taproot_tweaked_public_key)
         elif derivation.startswith("m/"):  # customized path
             # For legacy address
             addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
@@ -134,9 +135,10 @@ def main_entry(argv):
                 addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_v0_addr(human_readable_part, public_key_compressed)
             # For bech32m address
             if human_readable_part:
+                taproot_tweaked_private_key = p2tr_util.taproot_tweak_seckey(private_key)
                 public_key_x_coordinate = public_key_compressed[1:33]
-                taproot_output_key = p2tr_util.public_key_x_coordinate_to_taproot_output_key(public_key_x_coordinate)
-                addr_p2tr = p2wpkh_util.pubkey_to_segwit_v1_addr(human_readable_part, taproot_output_key)
+                taproot_tweaked_public_key = p2tr_util.public_key_x_coordinate_to_taproot_tweaked_pubkey(public_key_x_coordinate)
+                addr_p2tr = p2wpkh_util.pubkey_to_segwit_v1_addr(human_readable_part, taproot_tweaked_public_key)
     elif (len(inputs) == 66 and inputs.startswith("0x")) or len(inputs) == 64:
         # sys.stderr.write("you input private key\n")
         # private key
@@ -156,9 +158,10 @@ def main_entry(argv):
             addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
         if human_readable_part:
             addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_v0_addr(human_readable_part, public_key_compressed)
+            taproot_tweaked_private_key = p2tr_util.taproot_tweak_seckey(private_key)
             public_key_x_coordinate = public_key_compressed[1:33]
-            taproot_output_key = p2tr_util.public_key_x_coordinate_to_taproot_output_key(public_key_x_coordinate)
-            addr_p2tr = p2wpkh_util.pubkey_to_segwit_v1_addr(human_readable_part, taproot_output_key)
+            taproot_tweaked_public_key = p2tr_util.public_key_x_coordinate_to_taproot_tweaked_pubkey(public_key_x_coordinate)
+            addr_p2tr = p2wpkh_util.pubkey_to_segwit_v1_addr(human_readable_part, taproot_tweaked_public_key)
     elif (len(inputs) == 130 and inputs.startswith("0x")) or len(inputs) == 128 \
             or (len(inputs) == 132 and inputs.startswith("0x04")) \
             or (len(inputs) == 130 and inputs.startswith("04")):
@@ -180,8 +183,8 @@ def main_entry(argv):
         if human_readable_part:
             addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_v0_addr(human_readable_part, public_key_compressed)
             public_key_x_coordinate = public_key_compressed[1:33]
-            taproot_output_key = p2tr_util.public_key_x_coordinate_to_taproot_output_key(public_key_x_coordinate)
-            addr_p2tr = p2wpkh_util.pubkey_to_segwit_v1_addr(human_readable_part, taproot_output_key)
+            taproot_tweaked_public_key = p2tr_util.public_key_x_coordinate_to_taproot_tweaked_pubkey(public_key_x_coordinate)
+            addr_p2tr = p2wpkh_util.pubkey_to_segwit_v1_addr(human_readable_part, taproot_tweaked_public_key)
     elif (len(inputs) == 68 and inputs.startswith("0x")) or len(inputs) == 66:
         # sys.stderr.write("you input compressed public key\n")
         # compressed public key
@@ -199,8 +202,8 @@ def main_entry(argv):
         if human_readable_part:
             addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_v0_addr(human_readable_part, public_key_compressed)
             public_key_x_coordinate = public_key_compressed[1:33]
-            taproot_output_key = p2tr_util.public_key_x_coordinate_to_taproot_output_key(public_key_x_coordinate)
-            addr_p2tr = p2wpkh_util.pubkey_to_segwit_v1_addr(human_readable_part, taproot_output_key)
+            taproot_tweaked_public_key = p2tr_util.public_key_x_coordinate_to_taproot_tweaked_pubkey(public_key_x_coordinate)
+            addr_p2tr = p2wpkh_util.pubkey_to_segwit_v1_addr(human_readable_part, taproot_tweaked_public_key)
     elif (len(inputs) == 42 and inputs.startswith("0x")) or len(inputs) == 40:
         # sys.stderr.write("you input hash160 of public key\n")
         public_key_hash160 = bytes.fromhex(inputs.lower().replace('0x', ''))
@@ -227,9 +230,10 @@ def main_entry(argv):
             addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
         if human_readable_part:
             addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_v0_addr(human_readable_part, public_key_compressed)
+            taproot_tweaked_private_key = p2tr_util.taproot_tweak_seckey(private_key)
             public_key_x_coordinate = public_key_compressed[1:33]
-            taproot_output_key = p2tr_util.public_key_x_coordinate_to_taproot_output_key(public_key_x_coordinate)
-            addr_p2tr = p2wpkh_util.pubkey_to_segwit_v1_addr(human_readable_part, taproot_output_key)
+            taproot_tweaked_public_key = p2tr_util.public_key_x_coordinate_to_taproot_tweaked_pubkey(public_key_x_coordinate)
+            addr_p2tr = p2wpkh_util.pubkey_to_segwit_v1_addr(human_readable_part, taproot_tweaked_public_key)
     else:
         sys.stderr.write("invalid input: {0}\n".format(inputs))
         sys.exit(1)
@@ -242,6 +246,8 @@ def main_entry(argv):
         print("private key (WIF) = {}".format(private_key_wif.decode('ascii')))
     if private_key_wif_compressed:
         print("private key (WIF compressed) = {}".format(private_key_wif_compressed.decode('ascii')))
+    if taproot_tweaked_private_key:
+        print("taproot tweaked private key = {}".format(taproot_tweaked_private_key.hex()))
     if public_key_uncompressed:
         print("public key (uncompressed) = {}".format(public_key_uncompressed.hex()))
     if public_key_compressed:
@@ -252,8 +258,8 @@ def main_entry(argv):
         print("hash160 of compressed public key = {}".format(public_key_compressed_hash160.hex()))
     if public_key_hash160:
         print("hash160 of public key = {}".format(public_key_hash160.hex()))
-    if taproot_output_key:
-        print("taproot output key = {}".format(taproot_output_key.hex()))
+    if taproot_tweaked_public_key:
+        print("taproot tweaked public key (taproot output key) = {}".format(taproot_tweaked_public_key.hex()))
     if addr_p2pkh_uncompressed:
         print("legacy address (p2pkh uncompressed) = {}".format(addr_p2pkh_uncompressed.decode('ascii')))
         if chain == "bch":

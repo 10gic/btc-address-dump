@@ -48,9 +48,10 @@ Dump btc address from mnemonic words (bip86, P2TR)::
   private key (hex) = 666c57341ca198f7f9e821af23c4688d233deda501922ed9f4c54084bff47693
   private key (WIF) = 5JbPqxGCGR75Movygz29XuNYukSKbqnzz97FKwkfChgZjs2odq6
   private key (WIF compressed) = Kzeoq4v4j3PpEr9FDUg4fQA7qpim6nN2wCnaEcfhceZdVrgPziFd
+  taproot tweaked private key = a4242e9d5046485bef61d6788e01e6f9805f9f66a8bb54f332057907cc1f2889
   public key (compressed) = 02cb24ba2caf40b51fd72b395fe96794e6cdeec8fb5811ff1e6625af5fa3e0d587
   hash160 of compressed public key = 0e1f80bffb15cf157420c004c3fe173edc035b5a
-  taproot output key = fe2cff97d4abadb1590c7c4321afd25e0ed2a741c87772b7bb335fa4100c4d48
+  taproot tweaked public key (taproot output key) = fe2cff97d4abadb1590c7c4321afd25e0ed2a741c87772b7bb335fa4100c4d48
   bech32m address (p2tr) = bc1plck0l9754wkmzkgv03pjrt7jtc8d9f6pepmh9damxd06gyqvf4yqe3wewn
 
 Dump btc address from hex private key::
@@ -59,11 +60,12 @@ Dump btc address from hex private key::
   private key (hex) = c7ac679b56f50bfd54dd924fe45a8dca7a1c2dced254b03dac22afc03adb9127
   private key (WIF) = 5KLDyKtrScLYsKMJzVCt8Mf6Nn9DEV7V3fg8njfSZnqe7ZEMqzK
   private key (WIF compressed) = L3urFcPsE2yHf5zeQjVSfUB8j8FEzX5cnmhjNsJfqjKgowPP4tmg
+  taproot tweaked private key = d5fda04f7d24a3ed5ead21148a34577fa42010563a5b99cbfc20f89c9e29438a
   public key (uncompressed) = 044cd0aaeca3b636078583408e75edd77307b5190ca7a48bb9fbc1f2576c17dff1087190d91e26af594e3f8ecd3f4d3596c03c45d3b235da916903c930c6593cc4
   public key (compressed) = 024cd0aaeca3b636078583408e75edd77307b5190ca7a48bb9fbc1f2576c17dff1
   hash160 of uncompressed public key = fd214a3d033c82b307532018ac15ff6e06e62111
   hash160 of compressed public key = 1075f16844287d6d1c6fefbe2486cd3325127424
-  taproot output key = 1aea318388d939fff861ee264c7446d839580b07212c4c2ac2fb9cdd656237c3
+  taproot tweaked public key (taproot output key) = 1aea318388d939fff861ee264c7446d839580b07212c4c2ac2fb9cdd656237c3
   legacy address (p2pkh uncompressed) = 1Q5RqZctfcNkTPad2tuJSREByd2gB8xs63
   legacy address (p2pkh compressed) = 12W36tm2jnreFiYdrzfE6cvRaKRbicEpnA
   p2sh-segwit address (p2sh p2wpkh) = 3AzXxVUqdzvzEqVmdtmeVqRwc98uqwyh76
@@ -76,11 +78,12 @@ Dump btc address from WIF private key::
   private key (hex) = c7ac679b56f50bfd54dd924fe45a8dca7a1c2dced254b03dac22afc03adb9127
   private key (WIF) = 5KLDyKtrScLYsKMJzVCt8Mf6Nn9DEV7V3fg8njfSZnqe7ZEMqzK
   private key (WIF compressed) = L3urFcPsE2yHf5zeQjVSfUB8j8FEzX5cnmhjNsJfqjKgowPP4tmg
+  taproot tweaked private key = d5fda04f7d24a3ed5ead21148a34577fa42010563a5b99cbfc20f89c9e29438a
   public key (uncompressed) = 044cd0aaeca3b636078583408e75edd77307b5190ca7a48bb9fbc1f2576c17dff1087190d91e26af594e3f8ecd3f4d3596c03c45d3b235da916903c930c6593cc4
   public key (compressed) = 024cd0aaeca3b636078583408e75edd77307b5190ca7a48bb9fbc1f2576c17dff1
   hash160 of uncompressed public key = fd214a3d033c82b307532018ac15ff6e06e62111
   hash160 of compressed public key = 1075f16844287d6d1c6fefbe2486cd3325127424
-  taproot output key = 1aea318388d939fff861ee264c7446d839580b07212c4c2ac2fb9cdd656237c3
+  taproot tweaked public key (taproot output key) = 1aea318388d939fff861ee264c7446d839580b07212c4c2ac2fb9cdd656237c3
   legacy address (p2pkh uncompressed) = 1Q5RqZctfcNkTPad2tuJSREByd2gB8xs63
   legacy address (p2pkh compressed) = 12W36tm2jnreFiYdrzfE6cvRaKRbicEpnA
   p2sh-segwit address (p2sh p2wpkh) = 3AzXxVUqdzvzEqVmdtmeVqRwc98uqwyh76
@@ -94,7 +97,7 @@ Dump btc address from public key::
   public key (compressed) = 024cd0aaeca3b636078583408e75edd77307b5190ca7a48bb9fbc1f2576c17dff1
   hash160 of uncompressed public key = fd214a3d033c82b307532018ac15ff6e06e62111
   hash160 of compressed public key = 1075f16844287d6d1c6fefbe2486cd3325127424
-  taproot output key = 1aea318388d939fff861ee264c7446d839580b07212c4c2ac2fb9cdd656237c3
+  taproot tweaked public key (taproot output key) = 1aea318388d939fff861ee264c7446d839580b07212c4c2ac2fb9cdd656237c3
   legacy address (p2pkh uncompressed) = 1Q5RqZctfcNkTPad2tuJSREByd2gB8xs63
   legacy address (p2pkh compressed) = 12W36tm2jnreFiYdrzfE6cvRaKRbicEpnA
   p2sh-segwit address (p2sh p2wpkh) = 3AzXxVUqdzvzEqVmdtmeVqRwc98uqwyh76
@@ -108,7 +111,7 @@ Dump btc address from compressed public key::
   public key (compressed) = 024cd0aaeca3b636078583408e75edd77307b5190ca7a48bb9fbc1f2576c17dff1
   hash160 of uncompressed public key = fd214a3d033c82b307532018ac15ff6e06e62111
   hash160 of compressed public key = 1075f16844287d6d1c6fefbe2486cd3325127424
-  taproot output key = 1aea318388d939fff861ee264c7446d839580b07212c4c2ac2fb9cdd656237c3
+  taproot tweaked public key (taproot output key) = 1aea318388d939fff861ee264c7446d839580b07212c4c2ac2fb9cdd656237c3
   legacy address (p2pkh uncompressed) = 1Q5RqZctfcNkTPad2tuJSREByd2gB8xs63
   legacy address (p2pkh compressed) = 12W36tm2jnreFiYdrzfE6cvRaKRbicEpnA
   p2sh-segwit address (p2sh p2wpkh) = 3AzXxVUqdzvzEqVmdtmeVqRwc98uqwyh76
