@@ -214,14 +214,15 @@ grs:
   home: https://www.groestlcoin.org
   src_code: https://github.com/Groestlcoin/groestlcoin
   base58_prefix:
-    pubkey: 0
+    pubkey: 36
     script: 5
     wif: 128
-  bech32_hrp: bc
+  bech32_hrp: grs
   hd_path:
     bip44: m/44'/17'/0'/0/0
     bip49: m/49'/17'/0'/0/0
     bip84: m/84'/17'/0'/0/0
+    bip86: m/86'/17'/0'/0/0
 grs_testnet:
   name: Groestlcoin
   home: https://www.groestlcoin.org
@@ -230,11 +231,12 @@ grs_testnet:
     pubkey: 111
     script: 196
     wif: 239
-  bech32_hrp: tb
+  bech32_hrp: tgrs
   hd_path:
     bip44: m/44'/1'/0'/0/0
     bip49: m/49'/1'/0'/0/0
     bip84: m/84'/1'/0'/0/0
+    bip86: m/86'/1'/0'/0/0
 dgb:
   name: DigiByte
   home: https://digibyte.io
