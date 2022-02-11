@@ -100,18 +100,27 @@ def main_entry(argv):
             sys.stderr.write("derivation path {} is not available for {}\n".format(derivation, chain))
             sys.exit(1)
         private_key = mnemonic_util.mnemonic_to_private_key(mnemonic, derivation_path)
-        private_key_wif = wif_util.encode_wif(private_key, wif_version_bytes)
-        private_key_wif_compressed = wif_util.encode_wif(private_key, wif_version_bytes, compressed_wif=True)
+        if chain == "grs" or chain == "grs_testnet":
+            private_key_wif = wif_util.grs_encode_wif(private_key, wif_version_bytes)
+            private_key_wif_compressed = wif_util.grs_encode_wif(private_key, wif_version_bytes, compressed_wif=True)
+        else:
+            private_key_wif = wif_util.encode_wif(private_key, wif_version_bytes)
+            private_key_wif_compressed = wif_util.encode_wif(private_key, wif_version_bytes, compressed_wif=True)
         public_key_compressed = common_util.prikey_to_pubkey(private_key, compressed=True)
         public_key_compressed_hash160 = p2pkh_util.pubkey_to_hash160(public_key_compressed)
         if derivation == "bip44":
             # For legacy address
-            addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
+            if chain == "grs" or chain == "grs_testnet":
+                addr_p2pkh_compressed = p2pkh_util.grs_pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
+            else:
+                addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
         elif derivation == "bip49":
             # For p2sh-segwit address
             if script_version_bytes:
-                addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed,
-                                                                               script_version_bytes)
+                if chain == "grs" or chain == "grs_testnet":
+                    addr_p2sh_p2wpkh = p2sh_p2wpkh_util.grs_pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
+                else:
+                    addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
         elif derivation == "bip84":
             # For bech32 address
             if human_readable_part:
@@ -125,11 +134,16 @@ def main_entry(argv):
                 addr_p2tr = p2wpkh_util.pubkey_to_segwit_v1_addr(human_readable_part, taproot_tweaked_public_key)
         elif derivation.startswith("m/"):  # customized path
             # For legacy address
-            addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
+            if chain == "grs" or chain == "grs_testnet":
+                addr_p2pkh_compressed = p2pkh_util.grs_pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
+            else:
+                addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
             # For p2sh-segwit address
             if script_version_bytes:
-                addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed,
-                                                                               script_version_bytes)
+                if chain == "grs" or chain == "grs_testnet":
+                    addr_p2sh_p2wpkh = p2sh_p2wpkh_util.grs_pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
+                else:
+                    addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
             # For bech32 address
             if human_readable_part:
                 addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_v0_addr(human_readable_part, public_key_compressed)
@@ -146,16 +160,27 @@ def main_entry(argv):
         # For example: c7ac679b56f50bfd54dd924fe45a8dca7a1c2dced254b03dac22afc03adb9127
         private_key_hex = inputs.lower().replace('0x', '')
         private_key = bytes.fromhex(private_key_hex)
-        private_key_wif = wif_util.encode_wif(private_key, wif_version_bytes)
-        private_key_wif_compressed = wif_util.encode_wif(private_key, wif_version_bytes, compressed_wif=True)
+        if chain == "grs" or chain == "grs_testnet":
+            private_key_wif = wif_util.grs_encode_wif(private_key, wif_version_bytes)
+            private_key_wif_compressed = wif_util.grs_encode_wif(private_key, wif_version_bytes, compressed_wif=True)
+        else:
+            private_key_wif = wif_util.encode_wif(private_key, wif_version_bytes)
+            private_key_wif_compressed = wif_util.encode_wif(private_key, wif_version_bytes, compressed_wif=True)
         public_key_uncompressed = common_util.prikey_to_pubkey(private_key, compressed=False)
         public_key_compressed = common_util.pubkey_uncompressed_to_compressed(public_key_uncompressed)
         public_key_uncompressed_hash160 = p2pkh_util.pubkey_to_hash160(public_key_uncompressed)
         public_key_compressed_hash160 = p2pkh_util.pubkey_to_hash160(public_key_compressed)
-        addr_p2pkh_uncompressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_uncompressed, pubkey_version_bytes)
-        addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
+        if chain == "grs" or chain == "grs_testnet":
+            addr_p2pkh_uncompressed = p2pkh_util.grs_pubkey_to_p2pkh_addr(public_key_uncompressed, pubkey_version_bytes)
+            addr_p2pkh_compressed = p2pkh_util.grs_pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
+        else:
+            addr_p2pkh_uncompressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_uncompressed, pubkey_version_bytes)
+            addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
         if script_version_bytes:
-            addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
+            if chain == "grs" or chain == "grs_testnet":
+                addr_p2sh_p2wpkh = p2sh_p2wpkh_util.grs_pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
+            else:
+                addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
         if human_readable_part:
             addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_v0_addr(human_readable_part, public_key_compressed)
             taproot_tweaked_private_key = p2tr_util.taproot_tweak_seckey(private_key)
@@ -176,10 +201,17 @@ def main_entry(argv):
         public_key_compressed = common_util.pubkey_uncompressed_to_compressed(public_key_uncompressed)
         public_key_uncompressed_hash160 = p2pkh_util.pubkey_to_hash160(public_key_uncompressed)
         public_key_compressed_hash160 = p2pkh_util.pubkey_to_hash160(public_key_compressed)
-        addr_p2pkh_uncompressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_uncompressed, pubkey_version_bytes)
-        addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
+        if chain == "grs" or chain == "grs_testnet":
+            addr_p2pkh_uncompressed = p2pkh_util.grs_pubkey_to_p2pkh_addr(public_key_uncompressed, pubkey_version_bytes)
+            addr_p2pkh_compressed = p2pkh_util.grs_pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
+        else:
+            addr_p2pkh_uncompressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_uncompressed, pubkey_version_bytes)
+            addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
         if script_version_bytes:
-            addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
+            if chain == "grs" or chain == "grs_testnet":
+                addr_p2sh_p2wpkh = p2sh_p2wpkh_util.grs_pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
+            else:
+                addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
         if human_readable_part:
             addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_v0_addr(human_readable_part, public_key_compressed)
             public_key_x_coordinate = public_key_compressed[1:33]
@@ -195,10 +227,17 @@ def main_entry(argv):
         public_key_uncompressed = common_util.pubkey_compressed_to_uncompressed(public_key_compressed)
         public_key_uncompressed_hash160 = p2pkh_util.pubkey_to_hash160(public_key_uncompressed)
         public_key_compressed_hash160 = p2pkh_util.pubkey_to_hash160(public_key_compressed)
-        addr_p2pkh_uncompressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_uncompressed, pubkey_version_bytes)
-        addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
+        if chain == "grs" or chain == "grs_testnet":
+            addr_p2pkh_uncompressed = p2pkh_util.grs_pubkey_to_p2pkh_addr(public_key_uncompressed, pubkey_version_bytes)
+            addr_p2pkh_compressed = p2pkh_util.grs_pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
+        else:
+            addr_p2pkh_uncompressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_uncompressed, pubkey_version_bytes)
+            addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
         if script_version_bytes:
-            addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
+            if chain == "grs" or chain == "grs_testnet":
+                addr_p2sh_p2wpkh = p2sh_p2wpkh_util.grs_pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
+            else:
+                addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
         if human_readable_part:
             addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_v0_addr(human_readable_part, public_key_compressed)
             public_key_x_coordinate = public_key_compressed[1:33]
@@ -207,27 +246,47 @@ def main_entry(argv):
     elif (len(inputs) == 42 and inputs.startswith("0x")) or len(inputs) == 40:
         # sys.stderr.write("you input hash160 of public key\n")
         public_key_hash160 = bytes.fromhex(inputs.lower().replace('0x', ''))
-        addr_p2pkh = p2pkh_util.hash160_to_p2pkh_addr(public_key_hash160, pubkey_version_bytes)
+        if chain == "grs" or chain == "grs_testnet":
+            addr_p2pkh = p2pkh_util.grs_hash160_to_p2pkh_addr(public_key_hash160, pubkey_version_bytes)
+        else:
+            addr_p2pkh = p2pkh_util.hash160_to_p2pkh_addr(public_key_hash160, pubkey_version_bytes)
         if script_version_bytes:
-            addr_p2sh_p2wpkh = p2sh_p2wpkh_util.hash160_to_p2sh_p2wpkh_addr(public_key_hash160, script_version_bytes)
+            if chain == "grs" or chain == "grs_testnet":
+                addr_p2sh_p2wpkh = p2sh_p2wpkh_util.grs_hash160_to_p2sh_p2wpkh_addr(public_key_hash160, script_version_bytes)
+            else:
+                addr_p2sh_p2wpkh = p2sh_p2wpkh_util.hash160_to_p2sh_p2wpkh_addr(public_key_hash160, script_version_bytes)
         if human_readable_part:
             addr_p2wpkh = p2wpkh_util.hash160_to_segwit_v0_addr(human_readable_part, public_key_hash160)
-    elif wif_util.is_valid_wif(inputs):
-        if chain == "btc":
+    elif wif_util.is_valid_wif(inputs, chain):
+        if chain == "btc" or chain == "grs":
             assert inputs.startswith('5') or inputs.startswith('K') or inputs.startswith('L')
-        if chain == "btc-test":
+        if chain == "btc-test" or chain == "grs_testnet":
             assert inputs.startswith('9') or inputs.startswith('c')
-        private_key = wif_util.decode_wif(inputs)
-        private_key_wif = wif_util.encode_wif(private_key, wif_version_bytes)
-        private_key_wif_compressed = wif_util.encode_wif(private_key, wif_version_bytes, compressed_wif=True)
+        if chain == "grs" or chain == "grs_testnet":
+            private_key = wif_util.grs_decode_wif(inputs)
+        else:
+            private_key = wif_util.decode_wif(inputs)
+        if chain == "grs" or chain == "grs_testnet":
+            private_key_wif = wif_util.grs_encode_wif(private_key, wif_version_bytes)
+            private_key_wif_compressed = wif_util.grs_encode_wif(private_key, wif_version_bytes, compressed_wif=True)
+        else:
+            private_key_wif = wif_util.encode_wif(private_key, wif_version_bytes)
+            private_key_wif_compressed = wif_util.encode_wif(private_key, wif_version_bytes, compressed_wif=True)
         public_key_uncompressed = common_util.prikey_to_pubkey(private_key, compressed=False)
         public_key_compressed = common_util.pubkey_uncompressed_to_compressed(public_key_uncompressed)
         public_key_uncompressed_hash160 = p2pkh_util.pubkey_to_hash160(public_key_uncompressed)
         public_key_compressed_hash160 = p2pkh_util.pubkey_to_hash160(public_key_compressed)
-        addr_p2pkh_uncompressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_uncompressed, pubkey_version_bytes)
-        addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
+        if chain == "grs" or chain == "grs_testnet":
+            addr_p2pkh_uncompressed = p2pkh_util.grs_pubkey_to_p2pkh_addr(public_key_uncompressed, pubkey_version_bytes)
+            addr_p2pkh_compressed = p2pkh_util.grs_pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
+        else:
+            addr_p2pkh_uncompressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_uncompressed, pubkey_version_bytes)
+            addr_p2pkh_compressed = p2pkh_util.pubkey_to_p2pkh_addr(public_key_compressed, pubkey_version_bytes)
         if script_version_bytes:
-            addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
+            if chain == "grs" or chain == "grs_testnet":
+                addr_p2sh_p2wpkh = p2sh_p2wpkh_util.grs_pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
+            else:
+                addr_p2sh_p2wpkh = p2sh_p2wpkh_util.pubkey_to_p2sh_p2wpkh_addr(public_key_compressed, script_version_bytes)
         if human_readable_part:
             addr_p2wpkh = p2wpkh_util.pubkey_to_segwit_v0_addr(human_readable_part, public_key_compressed)
             taproot_tweaked_private_key = p2tr_util.taproot_tweak_seckey(private_key)
