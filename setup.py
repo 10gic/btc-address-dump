@@ -3,17 +3,9 @@
 
 from setuptools import setup
 
-requirements = [
-    "ecdsa>=0.15",
-    "base58>=2.0.0",
-    "base58grs>=2.0.0",
-    "pyyaml>=5.1",
-    "cashaddress>=1.0.6",
-]
-
 setup(
     name='btc-address-dump',
-    version='0.3.2',
+    version='0.4.0',
     author='cig01',
     url='https://github.com/10gic/btc-address-dump',
     license='MIT License',
