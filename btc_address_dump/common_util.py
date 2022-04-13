@@ -5,6 +5,18 @@ from typing import Tuple
 from ecdsa.ellipticcurve import PointJacobi
 
 
+def get_x(point: PointJacobi) -> int:
+    # Return point's x coordinate with type int
+    # If gmpy/gmpy2 is installed, point.x() return type of mpz (see https://gmpy2.readthedocs.io/en/latest/mpz.html)
+    # If gmpy/gmpy2 is not installed, point.x() return type of int
+    return int(point.x())
+
+
+def get_y(point: PointJacobi) -> int:
+    # Return point's y coordinate with type int
+    return int(point.y())
+
+
 def sha256(inputs: bytes) -> bytes:
     """ Computes sha256 """
     sha = hashlib.sha256()
@@ -85,4 +97,4 @@ def pubkey_from_point_to_bytes(x: int, y: int, compressed: bool = True) -> bytes
 def prikey_to_pubkey(private_key: bytes, compressed: bool = True) -> bytes:
     """ Derives pubkey from private key """
     pubkey_point: PointJacobi = int.from_bytes(private_key, byteorder='big') * ecdsa.curves.SECP256k1.generator
-    return pubkey_from_point_to_bytes(pubkey_point.x(), pubkey_point.y(), compressed)
+    return pubkey_from_point_to_bytes(get_x(pubkey_point), get_y(pubkey_point), compressed)

@@ -1,8 +1,15 @@
 import hashlib
+import os
+import sys
 from typing import Optional
 
 import ecdsa
 from ecdsa.ellipticcurve import PointJacobi, Point
+
+file_path = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+sys.path.insert(0, os.path.abspath(file_path))
+
+import common_util
 
 
 def bytes_from_int(x: int) -> bytes:
@@ -38,7 +45,7 @@ def lift_x(x: bytes) -> Optional[PointJacobi]:
 
 
 def has_even_y(P: PointJacobi) -> bool:
-    return P.y() % 2 == 0
+    return common_util.get_y(P) % 2 == 0
 
 
 def taproot_tweak_seckey(seckey0: bytes) -> bytes:
@@ -49,10 +56,10 @@ def taproot_tweak_seckey(seckey0: bytes) -> bytes:
     """
     P = int_from_bytes(seckey0) * ecdsa.curves.SECP256k1.generator
     seckey = int_from_bytes(seckey0) if has_even_y(P) else ecdsa.curves.SECP256k1.order - int_from_bytes(seckey0)
-    t = int_from_bytes(tagged_hash("TapTweak", bytes_from_int(P.x())))
+    t = int_from_bytes(tagged_hash("TapTweak", bytes_from_int(common_util.get_x(P))))
     if t >= ecdsa.curves.SECP256k1.order:
         raise ValueError
-    return bytes_from_int((seckey + t) % ecdsa.curves.SECP256k1.order)
+    return bytes_from_int(int((seckey + t) % ecdsa.curves.SECP256k1.order))
 
 
 def public_key_x_coordinate_to_taproot_tweaked_pubkey(public_key_x_coordinate: bytes) -> bytes:
@@ -66,8 +73,8 @@ def public_key_x_coordinate_to_taproot_tweaked_pubkey(public_key_x_coordinate: b
     """
     P: PointJacobi = lift_x(public_key_x_coordinate)
     assert P is not None
-    t = int_from_bytes(tagged_hash("TapTweak", bytes_from_int(P.x())))
+    t = int_from_bytes(tagged_hash("TapTweak", bytes_from_int(common_util.get_x(P))))
     if t >= ecdsa.curves.SECP256k1.order:
         raise ValueError
     Q: PointJacobi = P + t * ecdsa.curves.SECP256k1.generator
-    return bytes_from_int(Q.x())
+    return bytes_from_int(common_util.get_x(Q))

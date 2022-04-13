@@ -75,9 +75,10 @@ def derive_bip32childkey(parent_key: bytes, parent_chain_code: bytes, index: int
             raise Exception("left32 greater than or equal to the order, please use another index")
         if child_public_key == 0:
             raise Exception("resulting public key is the point at infinity, please use another index")
-        key = common_util.pubkey_from_point_to_bytes(child_public_key.x(), child_public_key.y())  # 33 bytes
+        key = common_util.pubkey_from_point_to_bytes(common_util.get_x(child_public_key),
+                                                     common_util.get_y(child_public_key))  # 33 bytes
     else:
-        child_private_key = (a + b) % BIP32_CURVE.order
+        child_private_key = int((a + b) % BIP32_CURVE.order)
         # check validation of resulting key
         if a >= BIP32_CURVE.order:
             raise Exception("left32 greater than or equal to the order, please use another index")
