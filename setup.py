@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='btc-address-dump',
-    version='0.4.1',
+    version='0.4.2',
     author='cig01',
     url='https://github.com/10gic/btc-address-dump',
     license='MIT License',

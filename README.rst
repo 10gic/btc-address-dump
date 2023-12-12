@@ -118,6 +118,19 @@ Dump btc address from compressed public key::
   bech32 address (p2wpkh) = bc1qzp6lz6zy9p7k68r0a7lzfpkdxvj3yapynzuatt
   bech32m address (p2tr) = bc1prt4rrqugmyull7rpacnycazxmqu4szc8yykyc2kzlwwd6etzxlpskwl7qz
 
+Dump taproot address from taproot output sec key::
+
+  $ btc_address_dump --taproot-output-seckey d5fda04f7d24a3ed5ead21148a34577fa42010563a5b99cbfc20f89c9e29438a
+  taproot output seckey = d5fda04f7d24a3ed5ead21148a34577fa42010563a5b99cbfc20f89c9e29438a
+  taproot output pubkey = 1aea318388d939fff861ee264c7446d839580b07212c4c2ac2fb9cdd656237c3
+  bech32m address (p2tr) = bc1prt4rrqugmyull7rpacnycazxmqu4szc8yykyc2kzlwwd6etzxlpskwl7qz
+
+Dump taproot address from taproot output pub key::
+
+  $ btc_address_dump --taproot-output-pubkey 1aea318388d939fff861ee264c7446d839580b07212c4c2ac2fb9cdd656237c3
+  taproot output pubkey = 1aea318388d939fff861ee264c7446d839580b07212c4c2ac2fb9cdd656237c3
+  bech32m address (p2tr) = bc1prt4rrqugmyull7rpacnycazxmqu4szc8yykyc2kzlwwd6etzxlpskwl7qz
+
 Dump btc address from hash160 of public key::
 
   $ btc_address_dump 1075f16844287d6d1c6fefbe2486cd3325127424

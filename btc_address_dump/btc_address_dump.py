@@ -78,10 +78,22 @@ def main_entry(argv):
              "bip44. Only applicable when input mnemonic words",
         default="bip44",
         dest="derivation")
+    parser.add_argument(
+        "--taproot-output-seckey",
+        help="treat input data as the taproot sec key (only hex string is supported)",
+        action="store_true",
+        dest="taproot_output_seckey")
+    parser.add_argument(
+        "--taproot-output-pubkey",
+        help="treat input data as the taproot pub key (only hex string is supported)",
+        action="store_true",
+        dest="taproot_output_pubkey")
     parser.add_argument("inputs", metavar="mnemonic-words|private-key|public-key")
     args = parser.parse_args(argv[1:])
     chain = args.chain
     derivation = args.derivation
+    taproot_output_seckey = args.taproot_output_seckey
+    taproot_output_pubkey = args.taproot_output_pubkey
     inputs = args.inputs
 
     # See https://en.bitcoin.it/wiki/List_of_address_prefixes
@@ -89,6 +101,30 @@ def main_entry(argv):
     script_version_bytes = get_base58_prefix(coins_info, chain, 'script')  # 0x05 for btc mainnet, 0xc4 for testnet
     wif_version_bytes = get_base58_prefix(coins_info, chain, 'wif')  # 0x80 for btc mainnet, 0xef for testnet
     human_readable_part = get_bech32_hrp(coins_info, chain)  # "bc" for btc mainnet, and "tb" for testnet
+
+    if taproot_output_seckey:
+        if (len(inputs) == 66 and inputs.startswith("0x")) or len(inputs) == 64:
+            # sys.stderr.write("you input taproot output sec key\n")
+            private_key_hex = inputs.lower().replace('0x', '')
+            private_key = bytes.fromhex(private_key_hex)
+            public_key_compressed = common_util.prikey_to_pubkey(private_key, compressed=True)
+            public_key_x_coordinate = public_key_compressed[1:33]
+            taproot_tweaked_public_key = public_key_x_coordinate
+            addr_p2tr = p2wpkh_util.pubkey_to_segwit_v1_addr(human_readable_part, taproot_tweaked_public_key)
+            print("taproot output seckey = {}".format(private_key_hex))
+            print("taproot output pubkey = {}".format(taproot_tweaked_public_key.hex()))
+            print("bech32m address (p2tr) = {}".format(addr_p2tr))
+            return
+    if taproot_output_pubkey:
+        if (len(inputs) == 66 and inputs.startswith("0x")) or len(inputs) == 64:
+            # sys.stderr.write("you input taproot output pub key\n")
+            public_key_x_coordinate_hex = inputs.lower().replace('0x', '')
+            public_key_x_coordinate = bytes.fromhex(public_key_x_coordinate_hex)
+            taproot_tweaked_public_key = public_key_x_coordinate
+            addr_p2tr = p2wpkh_util.pubkey_to_segwit_v1_addr(human_readable_part, taproot_tweaked_public_key)
+            print("taproot output pubkey = {}".format(taproot_tweaked_public_key.hex()))
+            print("bech32m address (p2tr) = {}".format(addr_p2tr))
+            return
 
     if re.search("^([a-zA-Z]+\\s){11}([a-zA-Z]+).*$", inputs):
         # 12 mnemonic words
