@@ -1,5 +1,4 @@
 import base58
-import base58grs
 import os
 import sys
 
@@ -7,6 +6,7 @@ file_path = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 sys.path.insert(0, os.path.abspath(file_path))
 
 import common_util
+import base58grs
 
 
 def hash160_to_p2sh_p2wpkh_addr(hash160: bytes, version: bytes) -> bytes:

@@ -1,8 +1,14 @@
 import hashlib
-import groestlcoin_hash
+import groestlcoin_hash2
 import base58
-import base58grs
+import os
+import sys
 from typing import Union
+
+file_path = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+sys.path.insert(0, os.path.abspath(file_path))
+
+import base58grs
 
 
 def scrub_input(hex_str_or_bytes: Union[str, bytes]) -> bytes:
@@ -52,7 +58,7 @@ def grs_encode_wif(private_key: Union[str, bytes], version: bytes, compressed_wi
     if compressed_wif:
         private_key_with_version = version + private_key + b'\x01'
     # perform DOUBLE GROESTL-512 hash on the mainnet_private_key
-    hash_bytes = groestlcoin_hash.getHash(private_key_with_version, len(private_key_with_version))
+    hash_bytes = groestlcoin_hash2.groestl_hash(private_key_with_version)
 
     # create a checksum using the first 4 bytes of the GROESTL-512 hash
     # append the 4 checksum bytes to the mainnet_private_key
@@ -94,7 +100,7 @@ def is_valid_wif(wif: str, chain: str) -> bool:
             #print(result)
             result, check = result[:-4], result[-4:]
             # DOUBLE GROESTL-512 hash
-            digest = groestlcoin_hash.getHash(result, len(result))
+            digest = groestlcoin_hash2.groestl_hash(result)
         else:
             result = base58.b58decode(wif)
             #print(result)

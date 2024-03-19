@@ -1,5 +1,4 @@
 import base58
-import base58grs
 import os
 import sys
 
@@ -7,6 +6,7 @@ file_path = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 sys.path.insert(0, os.path.abspath(file_path))
 
 import common_util
+import base58grs
 
 
 def pubkey_to_hash160(pubkey: bytes) -> bytes:

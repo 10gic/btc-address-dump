@@ -1,6 +1,5 @@
-ecdsa>=0.15
+ecdsa>=0.18
 base58>=2.0.0
-base58grs>=2.0.0
 pyyaml>=5.1
 cashaddress>=1.0.6
-groestlcoin_hash>=1.0.3
+groestlcoin_hash2>=1.1.1

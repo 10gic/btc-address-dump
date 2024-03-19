@@ -1,6 +1,6 @@
 import ecdsa
 import hashlib
-import groestlcoin_hash
+import groestlcoin_hash2
 from typing import Tuple
 from ecdsa.ellipticcurve import PointJacobi
 
@@ -41,7 +41,7 @@ def base58_cksum(inputs: bytes) -> bytes:
 
 def grs_base58_cksum(inputs: bytes) -> bytes:
     """ Computes base 58 four bytes check sum for grs """
-    return groestlcoin_hash.getHash(inputs, len(inputs))[0:4]
+    return groestlcoin_hash2.groestl_hash(inputs)[0:4]
 
 
 def pubkey_compressed_to_uncompressed(compressed_pubkey: bytes) -> bytes:
